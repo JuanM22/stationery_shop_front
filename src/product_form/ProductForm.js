@@ -13,10 +13,19 @@ class ProductForm extends React.Component {
         this.productService = new ProductServices();
     }
 
+    componentDidMount() {
+        this.productService.viewProduct(1).then(res => {
+            document.getElementById('code').value = res.productId;
+            document.getElementById('name').value = res.name;
+            document.getElementById('description').value = res.description;
+            document.getElementById('unitPrice').value = res.unitPrice;
+        });
+    }
+
     saveProduct = (e) => {
         e.preventDefault();
         const product = {
-            productId: document.getElementById('code').value,
+            productId: parseInt(document.getElementById('code').value),
             name: document.getElementById('name').value,
             description: document.getElementById('description').value,
             unitPrice: parseFloat(document.getElementById('unitPrice').value),

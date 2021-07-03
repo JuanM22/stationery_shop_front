@@ -12,6 +12,14 @@ class ProductServices {
         return response;
     }
 
+    async viewProduct(productId) {
+        let product = null;
+        await axios.get(this.url + 'view/' + productId).then(res => {
+            product = res.data;
+        });
+        return product;
+    }
+
     async listProducts() {
         let data = [];
         await axios.get(this.url + 'list').then(res => {

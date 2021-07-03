@@ -7,10 +7,10 @@ import ProductForm from './product_form/ProductForm';
 function App() {
   return (
     <div className="App">
-      <FilterComponent/>
+      {/* <FilterComponent/> */}
       <NavMenu />
-      {/* <ProductForm/> */}
-      <ProductCatalog/>
+      <ProductForm/>
+      {/* <ProductCatalog/> */}
     </div>
   );
 }

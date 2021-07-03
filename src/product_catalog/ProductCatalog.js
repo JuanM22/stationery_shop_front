@@ -48,7 +48,7 @@ class ProductCatalog extends React.Component {
         });
         return (
             <div className="container d-block position-absolute" id="catalogContainer">
-                {this.state.products.length > 0 ? products : <div className="text text-danger">No hay productos registrados en el sistema</div>}
+                {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
             </div>
         );
     }
