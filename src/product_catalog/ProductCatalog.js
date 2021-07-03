@@ -9,11 +9,11 @@ class ProductCatalog extends React.Component {
         this.state = {
             products: []
         }
-        this.productServices = new ProductServices();
+        this.productService = new ProductServices();
     }
 
     componentDidMount() {
-        this.productServices.listProducts().then(res => {
+        this.productService.listProducts().then(res => {
             this.setState({ products: res });
         });
     }
