@@ -5,14 +5,18 @@ import {
 } from "react-router-dom";
 import ProductServices from '../services/ProductServices';
 import FilterComponent from '../filter_compo/FilterComponent';
+import ProductPreview from '../product_preview/ProductPreview';
 
 class ProductCatalog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            products: []
+            products: [],
+            hide: true,
+            product: null
         }
+        this.orderProducts = [];
         this.productService = new ProductServices();
     }
 
@@ -22,8 +26,24 @@ class ProductCatalog extends React.Component {
         });
     }
 
-    onDetailButtonClick(id) {
-        alert(id);
+    setProduct = (orderDetail) => {
+        this.orderProducts.push(orderDetail);
+    }
+
+    showProductPreview = (product) => {
+        this.setState({ hide: false, product: product });
+    }
+
+    closeProductPreview = () => this.setState({ hide: true });
+
+    renderProductPreview() {
+        if (!this.state.hide) {
+            return (
+                <div id="addToCartForm">
+                    <ProductPreview product={this.state.product} setProduct={this.setProduct} closeProductPreview={this.closeProductPreview} />
+                </div>
+            )
+        }
     }
 
     render() {
@@ -45,6 +65,7 @@ class ProductCatalog extends React.Component {
                                 <label className="text-white">${product.unitPrice}</label>
                             </div>
                             <Link className="col-2 py-2 mx-3 btn btn-primary text-white" to={"/product/view/" + product.productId}>Ver en detalle</Link>
+                            <button className="col-2 py-2 btn btn-success text-white" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>
                         </div>
                     </div>
                 </div>
@@ -56,6 +77,7 @@ class ProductCatalog extends React.Component {
                 <div className="container d-block position-absolute" id="catalogContainer">
                     {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
                 </div>
+                {this.renderProductPreview()}
             </div>
         );
     }

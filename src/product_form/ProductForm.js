@@ -104,12 +104,14 @@ class ProductForm extends React.Component {
                         <label>Imagenes</label>
                         <input id="image" type="file" className="form-control-file" />
                     </div>
-                    {(this.state.buttonText === 'GUARDAR') ?
-                        <button type="submit" className="btn btn-success mt-3">{this.state.buttonText}</button>
-                        :
-                        <button type="button" className="btn btn-success mt-3" onClick={this.changeButtonText}>{this.state.buttonText}</button>
-                    }
-                    <button type="button" className="btn btn-danger mt-3">CANCELAR</button>
+                    <div className="form-group mt-3 mx-3">
+                        {(this.state.buttonText === 'GUARDAR') ?
+                            <button type="submit" className="btn btn-success mt-3">{this.state.buttonText}</button>
+                            :
+                            <button type="button" className="btn btn-success mt-3" onClick={this.changeButtonText}>{this.state.buttonText}</button>
+                        }
+                        <button type="button" className="btn btn-danger mt-3 mx-3">CANCELAR</button>
+                    </div>
                 </form>
             </div>
         );
