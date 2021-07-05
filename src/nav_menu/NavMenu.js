@@ -15,8 +15,13 @@ class NavMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            counter: 0
+            products: [],
+            services: []
         }
+    }
+
+    updateProductList = (productList) => {
+        this.setState({ products: productList });
     }
 
     render() {
@@ -50,7 +55,7 @@ class NavMenu extends React.Component {
                                 <li className="nav-link">
                                     <Link className="nav-item nav-link" to="/help">Ayuda</Link>
                                 </li>
-                                <ShoppingCart counter={this.state.counter} />
+                                <ShoppingCart productList={this.state.products} />
                                 <div className="profile-header-container">
                                     <div className="profile-header-img">
                                         <img className="img-circle" src="https://cdn.iconscout.com/icon/free/png-512/laptop-user-1-1179329.png" alt="user ph" />
@@ -62,7 +67,7 @@ class NavMenu extends React.Component {
                 </nav>
                 <Switch>
                     <Route path="/products">
-                        <ProductCatalog />
+                        <ProductCatalog updateProductList={this.updateProductList} />
                     </Route>
                     <Route path="/product/:operation/:id?">
                         <ProductForm />

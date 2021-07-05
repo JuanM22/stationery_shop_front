@@ -4,10 +4,6 @@ import './ShoppingCart.css';
 
 class ShoppingCart extends React.Component {
 
-    componentDidUpdate(prevProps) {
-        console.log(this.props.counter);
-    }
-
     render() {
         return (
             <div id="cart">
@@ -18,12 +14,12 @@ class ShoppingCart extends React.Component {
                 <div className="dropdown-menu">
                     <label className="dropdown-item">Productos:
                         <span className="position-absolute badge rounded-pill bg-danger mx-2">
-                            {this.props.counter}
+                            {this.props.productList.length}
                         </span>
                     </label>
                     <label className="dropdown-item">Servicios:
                         <span className="position-absolute badge rounded-pill bg-danger mx-2">
-                            2
+                            0
                         </span>
                     </label>
                     <hr className="dropdown-divider" />

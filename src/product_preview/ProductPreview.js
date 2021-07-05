@@ -12,6 +12,7 @@ class ProductPreview extends React.Component {
             styleSelected: document.getElementById('style').value
         }
         this.props.setProduct(orderDetail);
+        this.props.closeProductPreview();
     }
 
     render() {

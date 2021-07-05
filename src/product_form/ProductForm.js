@@ -1,7 +1,9 @@
 import React from 'react';
 import './ProductForm.css';
 import ProductServices from '../services/ProductServices';
+import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
 import { withRouter } from 'react-router-dom';
+import Buttons from '../form_buttons/Buttons';
 
 class ProductForm extends React.Component {
 
@@ -19,13 +21,12 @@ class ProductForm extends React.Component {
     componentDidMount() {
         const operation = this.props.match.params.operation;
         let text = 'GUARDAR';
-        let productId = 0;
         if (operation === 'view') {
-            const id = this.props.match.params.id;
-            productId = id;
-            this.productService.viewProduct(id).then(res => {
-                document.getElementById('code').value = res.productId;
+            const productId = this.props.match.params.id;
+            this.productService.viewProduct(productId).then(res => {
+                this.setState({ productId: res.productId });
                 document.getElementById('name').value = res.name;
+                document.getElementById('stock').value = res.stock;
                 document.getElementById('description').value = res.description;
                 document.getElementById('unitPrice').value = res.unitPrice;
             });
@@ -33,7 +34,7 @@ class ProductForm extends React.Component {
         } else {
             this.cleanFields();
         }
-        this.setState({ buttonText: text, productId: productId });
+        this.setState({ buttonText: text });
     }
 
     componentDidUpdate(prevProps) {
@@ -42,21 +43,16 @@ class ProductForm extends React.Component {
 
     saveProduct = (e) => {
         e.preventDefault();
-        alert(this.state.productId);
         const product = {
-            productId: parseInt(this.state.productId),
+            productId: this.state.productId,
             name: document.getElementById('name').value,
+            stock: parseInt(document.getElementById('stock').value),
             description: document.getElementById('description').value,
             unitPrice: parseFloat(document.getElementById('unitPrice').value),
             images: ['prueba1.png', 'prueba2.png']
         };
         this.productService.saveProduct(product).then(res => {
-            this.setState({
-                message: res,
-                hide: false
-            }
-            );
-            setTimeout(() => this.setState({ hide: true }), 2000);
+            this.setState({ message: res, hide: false });
         });
     }
 
@@ -66,8 +62,8 @@ class ProductForm extends React.Component {
     }
 
     cleanFields() {
-        document.getElementById('code').value = '';
         document.getElementById('name').value = '';
+        document.getElementById('stock').value = '';
         document.getElementById('description').value = '';
         document.getElementById('unitPrice').value = '';
     }
@@ -75,24 +71,26 @@ class ProductForm extends React.Component {
     render() {
         return (
             <div className="container-fluid" id="formContainer">
-                <div className="alert alert-success" hidden={this.state.hide}>{this.state.message}</div>
-                <form className="bg-light" onSubmit={this.saveProduct}>
+                <div className="text-center" hidden={this.state.hide}>
+                    <SuccessMessage message={this.state.message} />
+                </div>
+                <form className="bg-secondary text-white" onSubmit={this.saveProduct}>
                     <div className="card">
                         <div className="card-header bg-dark text-white text-center">PRODUCTO</div>
                     </div>
                     <div className="form-group mx-3">
                         <div className="row mt-3">
                             <div className="col-4">
-                                <label htmlFor="code">Código</label>
-                                <input id="code" type="text" className="form-control form-control-sm" readOnly />
-                            </div>
-                            <div className="col-4">
                                 <label htmlFor="name">Nombre</label>
                                 <input id="name" type="text" className="form-control form-control-sm" />
                             </div>
                             <div className="col-4">
+                                <label htmlFor="name">Stock</label>
+                                <input id="stock" type="number" className="form-control form-control-sm" />
+                            </div>
+                            <div className="col-4">
                                 <label htmlFor="unitPrice">Precio Unitario</label>
-                                <input id="unitPrice" type="text" className="form-control form-control-sm" />
+                                <input id="unitPrice" type="number" className="form-control form-control-sm" />
                             </div>
                         </div>
                     </div>
@@ -104,14 +102,7 @@ class ProductForm extends React.Component {
                         <label>Imagenes</label>
                         <input id="image" type="file" className="form-control-file" />
                     </div>
-                    <div className="form-group mt-3 mx-3">
-                        {(this.state.buttonText === 'GUARDAR') ?
-                            <button type="submit" className="btn btn-success mt-3">{this.state.buttonText}</button>
-                            :
-                            <button type="button" className="btn btn-success mt-3" onClick={this.changeButtonText}>{this.state.buttonText}</button>
-                        }
-                        <button type="button" className="btn btn-danger mt-3 mx-3">CANCELAR</button>
-                    </div>
+                    <Buttons buttonText={this.state.buttonText} changeButtonText={this.changeButtonText} />
                 </form>
             </div>
         );

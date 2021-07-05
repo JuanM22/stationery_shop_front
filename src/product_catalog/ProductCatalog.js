@@ -28,6 +28,7 @@ class ProductCatalog extends React.Component {
 
     setProduct = (orderDetail) => {
         this.orderProducts.push(orderDetail);
+        this.props.updateProductList(this.orderProducts);
     }
 
     showProductPreview = (product) => {
