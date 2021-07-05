@@ -50,26 +50,27 @@ class ProductCatalog extends React.Component {
     render() {
         const products = this.state.products.map((product) => {
             return (
-                <div className="card mb-2" key={product.productId}>
-                    <div className="card-body bg-secondary border border-dark">
-                        <h3 className="card-header bg-primary text-white">{product.name}</h3>
-                        <div className="form-group row mt-2 px-3">
-                            <img className="col-sm-3" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
-                            <div className="col-sm-8 mx-2 px-0 bg-light text-dark border border-dark">
-                                <h4 className="bg-dark text-white border border-dark py-2">Descripción</h4>
-                                <p>{product.description}</p>
+                <div className="card mb-2 bg-light" key={product.productId}>
+                    <div className="border border-dark">
+                        <div className="card-body">
+                            <div className="form-group row mt-2">
+                                <div className="col-3">
+                                    <img className="img-thumbnail rounded float-start" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                                    <div className="bg-dark mt-2">
+                                        <label className="text-white">Precio: ${product.unitPrice}</label>
+                                    </div>
+                                </div>
+                                <div className="col px-0 mx-4 border border-dark">
+                                    <div className="card-title bg-primary text-white fw-bold py-3">{product.name}</div>
+                                    <div className="my-5">
+                                        <Link className="btn btn-primary text-white w-25" to={"/product/view/" + product.productId}>Ver en detalle</Link>
+                                        <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row mt-2">
-                            <div className="bg-dark col-4 py-2 mx-3 align-self-center">
-                                <label className="mx-2 text-white">Precio: </label>
-                                <label className="text-white">${product.unitPrice}</label>
-                            </div>
-                            <Link className="col-2 py-2 mx-3 btn btn-primary text-white" to={"/product/view/" + product.productId}>Ver en detalle</Link>
-                            <button className="col-2 py-2 btn btn-success text-white" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>
                         </div>
                     </div>
-                </div>
+                </div >
             );
         });
         return (
@@ -79,7 +80,7 @@ class ProductCatalog extends React.Component {
                     {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
                 </div>
                 {this.renderProductPreview()}
-            </div>
+            </div >
         );
     }
 }

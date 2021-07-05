@@ -1,6 +1,7 @@
 import React from 'react';
 import ShoppingCartLogo from './shopping-cart.svg';
 import './ShoppingCart.css';
+import { Link } from 'react-router-dom';
 
 class ShoppingCart extends React.Component {
 
@@ -23,7 +24,7 @@ class ShoppingCart extends React.Component {
                         </span>
                     </label>
                     <hr className="dropdown-divider" />
-                    <button className="dropdown-item">Ver el carrito</button>
+                    <Link className="dropdown-item" to="/order">Ver el carrito</Link>
                 </div>
             </div>
         );

@@ -3,14 +3,15 @@ import './ProductForm.css';
 import ProductServices from '../services/ProductServices';
 import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
 import { withRouter } from 'react-router-dom';
-import Buttons from '../form_buttons/Buttons';
+import Buttons from '../form_buttons/buttons/Buttons';
+import SwitchButton from '../form_buttons/switch/SwitchButton';
 
 class ProductForm extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            buttonText: 'GUARDAR',
+            activeForm: false,
             hide: true,
             message: '',
             productId: 0
@@ -20,7 +21,6 @@ class ProductForm extends React.Component {
 
     componentDidMount() {
         const operation = this.props.match.params.operation;
-        let text = 'GUARDAR';
         if (operation === 'view') {
             const productId = this.props.match.params.id;
             this.productService.viewProduct(productId).then(res => {
@@ -30,11 +30,10 @@ class ProductForm extends React.Component {
                 document.getElementById('description').value = res.description;
                 document.getElementById('unitPrice').value = res.unitPrice;
             });
-            text = 'EDITAR';
+            this.setState({ activeForm: true });
         } else {
             this.cleanFields();
         }
-        this.setState({ buttonText: text });
     }
 
     componentDidUpdate(prevProps) {
@@ -56,9 +55,15 @@ class ProductForm extends React.Component {
         });
     }
 
-    changeButtonText = (e) => {
-        e.preventDefault();
-        this.setState({ buttonText: 'GUARDAR' });
+    renderSwitchButton() {
+        if (this.props.match.params.operation === 'view') {
+            return (<SwitchButton changeFormState={this.changeFormState} />)
+        }
+
+    }
+
+    changeFormState = () => {
+        this.setState({ activeForm: !this.state.activeForm });
     }
 
     cleanFields() {
@@ -74,36 +79,65 @@ class ProductForm extends React.Component {
                 <div className="text-center" hidden={this.state.hide}>
                     <SuccessMessage message={this.state.message} />
                 </div>
-                <form className="bg-secondary text-white" onSubmit={this.saveProduct}>
-                    <div className="card">
-                        <div className="card-header bg-dark text-white text-center">PRODUCTO</div>
-                    </div>
-                    <div className="form-group mx-3">
-                        <div className="row mt-3">
-                            <div className="col-4">
-                                <label htmlFor="name">Nombre</label>
-                                <input id="name" type="text" className="form-control form-control-sm" />
+                <div className="card">
+                    <form className="text-white fw-bold" onSubmit={this.saveProduct}>
+                        <div className="card-header bg-dark text-white text-center fw-bold">
+                            <h3 className="card-title">PRODUCTO</h3>
+                        </div>
+                        <div className="card-body bg-secondary">
+                            {this.renderSwitchButton()}
+                            <div className="form-group mx-3">
+                                <div className="row">
+                                    <div className="col-4">
+                                        <label htmlFor="name">Nombre</label>
+                                        <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                    </div>
+                                    <div className="col-4">
+                                        <label htmlFor="name">Stock</label>
+                                        <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                    </div>
+                                    <div className="col-4">
+                                        <label htmlFor="unitPrice">Precio Unitario</label>
+                                        <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col-4">
-                                <label htmlFor="name">Stock</label>
-                                <input id="stock" type="number" className="form-control form-control-sm" />
+                            <div className="form-group mt-3 mx-3">
+                                <label htmlFor="description">Descripción</label>
+                                <textarea className="form-control" id="description" rows="3" readOnly={this.state.activeForm}></textarea>
                             </div>
-                            <div className="col-4">
-                                <label htmlFor="unitPrice">Precio Unitario</label>
-                                <input id="unitPrice" type="number" className="form-control form-control-sm" />
+                            <div className="form-group mt-3 mx-3">
+                                <label>Imagenes</label>
+                                <div className="form-group row mt-2 bg-light py-2 rounded mx-0">
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                    <div className="col-2">
+                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
+                                    </div>
+                                </div>
+                                <div className="form-group row mt-3 py-2">
+                                    <div className="col">
+                                        <input id="image" type="file" className="form-control-file" disabled={this.state.activeForm}/>
+                                    </div>
+                                    <Buttons activeForm={this.state.activeForm} changeButtonText={this.changeButtonText} />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="form-group mt-3 mx-3">
-                        <label htmlFor="description">Descripción</label>
-                        <textarea className="form-control" id="description" rows="3"></textarea>
-                    </div>
-                    <div className="form-group mt-3 mx-3">
-                        <label>Imagenes</label>
-                        <input id="image" type="file" className="form-control-file" />
-                    </div>
-                    <Buttons buttonText={this.state.buttonText} changeButtonText={this.changeButtonText} />
-                </form>
+                    </form>
+                </div>
             </div>
         );
     }
