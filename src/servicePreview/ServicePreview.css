@@ -1,7 +1,7 @@
 #servicePreview {
-    margin-top: 2.5%;
-    background-color: red;
-    height: 90%;
+    max-height: 95vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #closePreviewBtn {

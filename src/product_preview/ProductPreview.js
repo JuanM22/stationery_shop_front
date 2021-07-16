@@ -17,14 +17,16 @@ class ProductPreview extends React.Component {
 
     render() {
         return (
-            <div className="container" id="productPreview">
-                <h1 className="py-2">{this.product.name}</h1>
+            <div className="container py-3 my-3 bg-light border border-4 border-warning rounded" id="productPreview">
+                <div className="bg-primary text-white">
+                    <h3 className="py-2">{this.product.name}</h3>
+                </div>
                 <div className="bg-dark">
                     <img className="col-sm-3 my-2" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
                 </div>
-                <div className="form-group row my-2 mx-3">
-                    <h3>Descripción</h3>
-                    <p>{this.product.description}</p>
+                <div className="mt-2">
+                    <h3 className="bg-primary text-white py-2 mb-0 border border-dark border-2">Descripción</h3>
+                    <p className="py-2 lead border border-top-0 border-dark">{this.product.description}</p>
                 </div>
                 <div className="form-group row my-2 mx-3">
                     <div className="col-sm">

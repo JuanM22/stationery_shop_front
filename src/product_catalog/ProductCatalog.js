@@ -15,10 +15,10 @@ class ProductCatalog extends React.Component {
         this.state = {
             products: [],
             hide: true,
-            product: null
+            product: null,
+            orderProducts: this.props.products,
+            orderServices: this.props.services
         }
-        this.orderProducts = this.props.products;
-        this.orderServices = this.props.services;
         this.productService = new ProductServices();
     }
 
@@ -40,15 +40,19 @@ class ProductCatalog extends React.Component {
     }
 
     setProduct = (orderDetail) => {
-        this.orderProducts.push(orderDetail);
-        this.props.updateProductList(this.orderProducts);
-        localStorage.setItem('productList', JSON.stringify(this.orderProducts));
+        const orderProducts = this.state.orderProducts;
+        orderProducts.push(orderDetail);
+        this.props.updateProductList(this.state.orderProducts);
+        localStorage.setItem('productList', JSON.stringify(this.state.orderProducts));
+        this.setState({ orderProducts: orderProducts });
     }
 
     setService = (orderDetail) => {
-        this.orderServices.push(orderDetail);
-        this.props.updateServiceList(this.orderServices);
-        localStorage.setItem('serviceList', JSON.stringify(this.orderServices));
+        const orderServices = this.state.orderServices;
+        orderServices.push(orderDetail);
+        this.props.updateServiceList(this.state.orderServices);
+        localStorage.setItem('serviceList', JSON.stringify(this.state.orderServices));
+        this.setState({ orderServices: orderServices });
     }
 
     showProductPreview = (product) => {
