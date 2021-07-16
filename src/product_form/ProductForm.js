@@ -48,7 +48,8 @@ class ProductForm extends React.Component {
             stock: parseInt(document.getElementById('stock').value),
             description: document.getElementById('description').value,
             unitPrice: parseFloat(document.getElementById('unitPrice').value),
-            images: ['prueba1.png', 'prueba2.png']
+            images: ['prueba1.png', 'prueba2.png'],
+            type: (this.props.title === "PRODUCTO") ? 'products' : 'services'
         };
         this.productService.saveProduct(product).then(res => {
             this.setState({ message: res, hide: false });
@@ -82,22 +83,22 @@ class ProductForm extends React.Component {
                 <div className="card">
                     <form className="text-white fw-bold" onSubmit={this.saveProduct}>
                         <div className="card-header bg-dark text-white text-center fw-bold">
-                            <h3 className="card-title">PRODUCTO</h3>
+                            <h3 className="card-title">{this.props.title}</h3>
                         </div>
                         <div className="card-body bg-secondary">
                             {this.renderSwitchButton()}
                             <div className="form-group mx-3">
                                 <div className="row">
-                                    <div className="col-4">
+                                    <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
                                         <label htmlFor="name">Nombre</label>
                                         <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
                                     </div>
-                                    <div className="col-4">
+                                    <div className="col-4" hidden={this.props.title !== 'PRODUCTO'}>
                                         <label htmlFor="name">Stock</label>
                                         <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
                                     </div>
-                                    <div className="col-4">
-                                        <label htmlFor="unitPrice">Precio Unitario</label>
+                                    <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
+                                        <label htmlFor="unitPrice">Precio</label>
                                         <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
                                     </div>
                                 </div>

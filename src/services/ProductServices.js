@@ -20,9 +20,9 @@ class ProductServices {
         return product;
     }
 
-    async listProducts() {
+    async listProducts(productType) {
         let data = [];
-        await axios.get(this.url + 'list').then(res => {
+        await axios.get(this.url + 'list', { params: { productType: productType } }).then(res => {
             data = res.data;
         });
         return data;

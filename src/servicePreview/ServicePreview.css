@@ -1,0 +1,11 @@
+#servicePreview {
+    margin-top: 2.5%;
+    background-color: red;
+    height: 90%;
+}
+
+#closePreviewBtn {
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 60%;
+}

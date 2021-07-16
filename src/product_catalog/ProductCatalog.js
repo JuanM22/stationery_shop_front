@@ -6,6 +6,7 @@ import {
 import ProductServices from '../services/ProductServices';
 import FilterComponent from '../filter_compo/FilterComponent';
 import ProductPreview from '../product_preview/ProductPreview';
+import ServicePreview from '../servicePreview/ServicePreview';
 
 class ProductCatalog extends React.Component {
 
@@ -16,12 +17,24 @@ class ProductCatalog extends React.Component {
             hide: true,
             product: null
         }
-        this.orderProducts = [];
+        this.orderProducts = this.props.products;
+        this.orderServices = this.props.services;
         this.productService = new ProductServices();
     }
 
     componentDidMount() {
-        this.productService.listProducts().then(res => {
+        this.showCatalog();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.productType !== prevProps.productType) {
+            this.showCatalog();
+        }
+    }
+
+    showCatalog() {
+        const productType = this.props.productType;
+        this.productService.listProducts(productType).then(res => {
             this.setState({ products: res });
         });
     }
@@ -29,19 +42,30 @@ class ProductCatalog extends React.Component {
     setProduct = (orderDetail) => {
         this.orderProducts.push(orderDetail);
         this.props.updateProductList(this.orderProducts);
+        localStorage.setItem('productList', JSON.stringify(this.orderProducts));
+    }
+
+    setService = (orderDetail) => {
+        this.orderServices.push(orderDetail);
+        this.props.updateServiceList(this.orderServices);
+        localStorage.setItem('serviceList', JSON.stringify(this.orderServices));
     }
 
     showProductPreview = (product) => {
         this.setState({ hide: false, product: product });
     }
 
-    closeProductPreview = () => this.setState({ hide: true });
+    closePreview = () => this.setState({ hide: true });
 
     renderProductPreview() {
         if (!this.state.hide) {
             return (
                 <div id="addToCartForm">
-                    <ProductPreview product={this.state.product} setProduct={this.setProduct} closeProductPreview={this.closeProductPreview} />
+                    {this.props.productType === 'products' ?
+                        <ProductPreview product={this.state.product} setProduct={this.setProduct} closePreview={this.closePreview} />
+                        :
+                        <ServicePreview service={this.state.product} setService={this.setService} closePreview={this.closePreview} />
+                    }
                 </div>
             )
         }
@@ -49,6 +73,7 @@ class ProductCatalog extends React.Component {
 
     render() {
         const products = this.state.products.map((product) => {
+            var route = this.props.productType === "products" ? '/product' : '/service'
             return (
                 <div className="card mb-2 bg-light" key={product.productId}>
                     <div className="border border-dark">
@@ -63,7 +88,7 @@ class ProductCatalog extends React.Component {
                                 <div className="col px-0 mx-4 border border-dark">
                                     <div className="card-title bg-primary text-white fw-bold py-3">{product.name}</div>
                                     <div className="my-5">
-                                        <Link className="btn btn-primary text-white w-25" to={"/product/view/" + product.productId}>Ver en detalle</Link>
+                                        <Link className="btn btn-primary text-white w-25" to={route + "/view/" + product.productId}>Ver en detalle</Link>
                                         <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>
                                     </div>
                                 </div>

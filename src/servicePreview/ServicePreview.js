@@ -1,30 +1,30 @@
 import React from 'react';
-import './ProductPreview.css';
+import './ServicePreview.css';
 
-class ProductPreview extends React.Component {
+class ServicePreview extends React.Component {
 
-    product = this.props.product;
+    service = this.props.service;
 
     sendOrderDetailData = () => {
         const orderDetail = {
-            product: this.product,
+            service: this.service,
             quantity: parseInt(document.getElementById('quantity').value),
             styleSelected: document.getElementById('style').value
         }
-        this.props.setProduct(orderDetail);
+        this.props.setService(orderDetail);
         this.props.closePreview();
     }
 
     render() {
         return (
-            <div className="container" id="productPreview">
-                <h1 className="py-2">{this.product.name}</h1>
+            <div className="container" id="servicePreview">
+                <h1 className="py-2">{this.service.name}</h1>
                 <div className="bg-dark">
                     <img className="col-sm-3 my-2" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
                 </div>
                 <div className="form-group row my-2 mx-3">
                     <h3>Descripción</h3>
-                    <p>{this.product.description}</p>
+                    <p>{this.service.description}</p>
                 </div>
                 <div className="form-group row my-2 mx-3">
                     <div className="col-sm">
@@ -52,4 +52,4 @@ class ProductPreview extends React.Component {
 
 }
 
-export default ProductPreview;
+export default ServicePreview;

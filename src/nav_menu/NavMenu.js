@@ -21,13 +21,20 @@ class NavMenu extends React.Component {
         }
     }
 
+    componentDidMount(){
+        let storedProducts = JSON.parse(localStorage.getItem('productList'));
+        let storedServices = JSON.parse(localStorage.getItem('serviceList'));
+        let products = (storedProducts === null) ? [] : storedProducts;
+        let services = (storedServices === null) ? [] : storedServices;
+        this.setState({products: products, services: services});
+    }
+
     updateProductList = (productList) => {
         this.setState({ products: productList });
     }
 
-    componentDidUpdate(prevProps) {
-        console.log('naVmenu');
-        console.log(this.state.products);
+    updateServiceList = (serviceList) => {
+        this.setState({ services: serviceList });
     }
 
     render() {
@@ -61,7 +68,7 @@ class NavMenu extends React.Component {
                                 <li className="nav-link">
                                     <Link className="nav-item nav-link text-white" to="/help">Ayuda</Link>
                                 </li>
-                                <ShoppingCart productList={this.state.products} />
+                                <ShoppingCart productList={this.state.products} serviceList={this.state.services}/>
                                 <div className="profile-header-container">
                                     <div className="profile-header-img">
                                         <img className="img-circle" src="https://cdn.iconscout.com/icon/free/png-512/laptop-user-1-1179329.png" alt="user ph" />
@@ -73,13 +80,19 @@ class NavMenu extends React.Component {
                 </nav>
                 <Switch>
                     <Route path="/products">
-                        <ProductCatalog updateProductList={this.updateProductList} />
+                        <ProductCatalog updateProductList={this.updateProductList} productType="products" products={this.state.products} />
                     </Route>
                     <Route path="/product/:operation/:id?">
-                        <ProductForm />
+                        <ProductForm title="PRODUCTO" />
                     </Route>
                     <Route path="/order">
-                        <OrderPreview productList={this.state.products} />
+                        <OrderPreview productList={this.state.products} serviceList={this.state.services} />
+                    </Route>
+                    <Route path="/services">
+                        <ProductCatalog updateServiceList={this.updateServiceList} productType="services" services={this.state.services}/>
+                    </Route>
+                    <Route path="/service/:operation/:id?">
+                        <ProductForm title="SERVICIO" />
                     </Route>
                 </Switch>
             </Router>
