@@ -64,7 +64,7 @@ class OrderPreview extends React.Component {
                     <h4 className="card-header bg-primary text-white">{detail.service.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
-                            <img className="img-thumbnail border border-dark rounded float-start" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                            <img className="mx-3 img-thumbnail border border-dark rounded float-start" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
                         </div>
                         <div className="col">
                             <div className="form-group row mx-2">

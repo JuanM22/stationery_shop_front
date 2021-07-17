@@ -1,0 +1,13 @@
+#pictures_container .carousel__slide {
+    background-color: #292b2c;
+    border: 1px solid #f7f7f7;
+    height: 45vh;
+    margin-right: 0.2%;
+}
+
+#pictures_container img {
+    width: 50%;
+    height: 100%;
+    margin-left: 25%;
+    margin-right: 20%;
+}

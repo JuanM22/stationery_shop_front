@@ -1,9 +1,11 @@
 import React from 'react';
 import './ProductPreview.css';
+import ImageViewer from '../image_viewer/ImageViewer';
 
 class ProductPreview extends React.Component {
 
     product = this.props.product;
+    productPics = [];
 
     sendOrderDetailData = () => {
         const orderDetail = {
@@ -15,14 +17,18 @@ class ProductPreview extends React.Component {
         this.props.closePreview();
     }
 
+    renderImageViewer() {
+        if (this.productPics.length > 0) return <ImageViewer productPics={this.productPics} options={{ infinite: false }} />
+    }
+
     render() {
         return (
             <div className="container py-3 my-3 bg-light border border-4 border-warning rounded" id="productPreview">
                 <div className="bg-primary text-white">
                     <h3 className="py-2">{this.product.name}</h3>
                 </div>
-                <div className="bg-dark">
-                    <img className="col-sm-3 my-2" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                <div className="form-group row mt-2 py-2 rounded mx-0">
+                    {this.renderImageViewer()}
                 </div>
                 <div className="mt-2">
                     <h3 className="bg-primary text-white py-2 mb-0 border border-dark border-2">Descripción</h3>

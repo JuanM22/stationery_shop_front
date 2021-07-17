@@ -5,6 +5,7 @@ import SuccessMessage from '../custom_messages/success_message_compo/SuccessMess
 import { withRouter } from 'react-router-dom';
 import Buttons from '../form_buttons/buttons/Buttons';
 import SwitchButton from '../form_buttons/switch/SwitchButton';
+import ImageViewer from '../image_viewer/ImageViewer';
 
 class ProductForm extends React.Component {
 
@@ -14,7 +15,9 @@ class ProductForm extends React.Component {
             activeForm: false,
             hide: true,
             message: '',
-            productId: 0
+            productId: 0,
+            productPics: [],
+            submited: false
         }
         this.productService = new ProductServices();
     }
@@ -37,7 +40,7 @@ class ProductForm extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.match.params.operation === 'create') this.cleanFields()
+        if (this.props.match.params.operation === 'create' && this.state.submited) this.cleanFields()
     }
 
     saveProduct = (e) => {
@@ -52,7 +55,7 @@ class ProductForm extends React.Component {
             type: (this.props.title === "PRODUCTO") ? 'products' : 'services'
         };
         this.productService.saveProduct(product).then(res => {
-            this.setState({ message: res, hide: false });
+            this.setState({ message: res, hide: false, submited: true });
         });
     }
 
@@ -60,7 +63,6 @@ class ProductForm extends React.Component {
         if (this.props.match.params.operation === 'view') {
             return (<SwitchButton changeFormState={this.changeFormState} />)
         }
-
     }
 
     changeFormState = () => {
@@ -73,6 +75,19 @@ class ProductForm extends React.Component {
         document.getElementById('description').value = '';
         document.getElementById('unitPrice').value = '';
     }
+
+    renderImageViewer() {
+        if (this.state.productPics.length > 0) return <ImageViewer productPics={this.state.productPics} options={{ infinite: false }} />
+    }
+
+    loadFile(e) {
+        const src = URL.createObjectURL(e.target.files[0]);
+        const productPics = this.state.productPics;
+        productPics.push(src);
+        e.target.value = null;
+        this.setState({ productPics: productPics });
+        e.preventDefault();
+    };
 
     render() {
         return (
@@ -91,15 +106,15 @@ class ProductForm extends React.Component {
                                 <div className="row">
                                     <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
                                         <label htmlFor="name">Nombre</label>
-                                        <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                        <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm} />
                                     </div>
                                     <div className="col-4" hidden={this.props.title !== 'PRODUCTO'}>
                                         <label htmlFor="name">Stock</label>
-                                        <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                        <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
                                     </div>
                                     <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
                                         <label htmlFor="unitPrice">Precio</label>
-                                        <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm}/>
+                                        <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
                                     </div>
                                 </div>
                             </div>
@@ -109,29 +124,12 @@ class ProductForm extends React.Component {
                             </div>
                             <div className="form-group mt-3 mx-3">
                                 <label>Imagenes</label>
-                                <div className="form-group row mt-2 bg-light py-2 rounded mx-0">
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
-                                    <div className="col-2">
-                                        <img className="img-thumbnail border border-dark rounded float-start" src="https://papelesprimavera.vteximg.com.br/arquivos/ids/158720-1000-1000/cartulina-colores-pastel-primavera-1-.jpg?v=637323235041530000" alt="pic_1" />
-                                    </div>
+                                <div className="form-group row mt-2 bg-dark py-2 rounded mx-0">
+                                    {this.renderImageViewer()}
                                 </div>
                                 <div className="form-group row mt-3 py-2">
                                     <div className="col">
-                                        <input id="image" type="file" className="form-control-file" disabled={this.state.activeForm}/>
+                                        <input id="image" type="file" className="form-control-file" onChange={(e) => { this.loadFile(e) }} disabled={this.state.activeForm} />
                                     </div>
                                     <Buttons activeForm={this.state.activeForm} changeButtonText={this.changeButtonText} />
                                 </div>
