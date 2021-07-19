@@ -6,7 +6,7 @@ function ImageViewer(props) {
 
     const pictures = props.productPics.map((item, index) => {
         return (
-            "<img data-fancybox class='img-fluid border border-info border-3 rounded float-start' src='" + item + "' alt='pic_1' />"
+            "<img data-fancybox class='img-fluid border border-info border-3 rounded float-start' src='" + item.src + "' alt='pic_1' />"
         )
     });
 

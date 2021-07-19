@@ -4,6 +4,7 @@ import {
     Link,
 } from "react-router-dom";
 import ProductServices from '../services/ProductServices';
+import FileServices from '../services/FileServices';
 import FilterComponent from '../filter_compo/FilterComponent';
 import ProductPreview from '../product_preview/ProductPreview';
 import ServicePreview from '../servicePreview/ServicePreview';
@@ -17,9 +18,11 @@ class ProductCatalog extends React.Component {
             hide: true,
             product: null,
             orderProducts: this.props.products,
-            orderServices: this.props.services
+            orderServices: this.props.services,
+            productImages: []
         }
         this.productService = new ProductServices();
+        this.fileService = new FileServices();
     }
 
     componentDidMount() {
@@ -35,6 +38,21 @@ class ProductCatalog extends React.Component {
     showCatalog() {
         const productType = this.props.productType;
         this.productService.listProducts(productType).then(res => {
+            const productImages = this.state.productImages;
+            for (let product of res) {
+                let randomIndex = Math.floor((Math.random() * product.images.length));
+                this.fileService.getFiles(product.images[randomIndex]).then(res => {
+                    var file = new File([res], product.images[randomIndex], { type: res.type });
+                    var src = URL.createObjectURL(file);
+                    const info = {
+                        src: src,
+                        pos: product.productId
+                    }
+                    productImages.push(info);
+                    productImages.sort((a, b) => (a.pos - b.pos));
+                    this.setState({ productImages: productImages });
+                });
+            }
             this.setState({ products: res });
         });
     }
@@ -43,7 +61,7 @@ class ProductCatalog extends React.Component {
         const orderProducts = this.state.orderProducts;
         orderProducts.push(orderDetail);
         this.props.updateProductList(this.state.orderProducts);
-        localStorage.setItem('productList', JSON.stringify(this.state.orderProducts));
+        sessionStorage.setItem('productList', JSON.stringify(this.state.orderProducts));
         this.setState({ orderProducts: orderProducts });
     }
 
@@ -51,7 +69,7 @@ class ProductCatalog extends React.Component {
         const orderServices = this.state.orderServices;
         orderServices.push(orderDetail);
         this.props.updateServiceList(this.state.orderServices);
-        localStorage.setItem('serviceList', JSON.stringify(this.state.orderServices));
+        sessionStorage.setItem('serviceList', JSON.stringify(this.state.orderServices));
         this.setState({ orderServices: orderServices });
     }
 
@@ -75,16 +93,26 @@ class ProductCatalog extends React.Component {
         }
     }
 
+    async getFirstProductImage(product) {
+        var randomIndex = Math.floor((Math.random() * product.images.length));
+        var src = null;
+        await this.fileService.getFiles(product.images[randomIndex]).then(res => {
+            var file = new File([res], product.images[randomIndex], { type: res.type });
+            src = URL.createObjectURL(file);
+        });
+        return src;
+    }
+
     render() {
-        const products = this.state.products.map((product) => {
-            var route = this.props.productType === "products" ? '/product' : '/service'
+        const products = this.state.products.map((product, index) => {
+            var route = this.props.productType === "products" ? '/product' : '/service';
             return (
                 <div className="card mb-2 bg-light" key={product.productId}>
                     <div className="border border-dark">
                         <div className="card-body">
                             <div className="form-group row mt-2">
-                                <div className="col-3">
-                                    <img className="img-thumbnail rounded float-start" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                                <div className="col-3 bg-dark" id="catalogProductPic">
+                                    <img className="img-thumbnail rounded" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
                                     <div className="bg-dark mt-2">
                                         <label className="text-white">Precio: ${product.unitPrice}</label>
                                     </div>

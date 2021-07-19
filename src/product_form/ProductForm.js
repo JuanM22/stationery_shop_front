@@ -1,8 +1,9 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import './ProductForm.css';
 import ProductServices from '../services/ProductServices';
+import FileServices from '../services/FileServices';
 import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
-import { withRouter } from 'react-router-dom';
 import Buttons from '../form_buttons/buttons/Buttons';
 import SwitchButton from '../form_buttons/switch/SwitchButton';
 import ImageViewer from '../image_viewer/ImageViewer';
@@ -20,6 +21,7 @@ class ProductForm extends React.Component {
             submited: false
         }
         this.productService = new ProductServices();
+        this.fileService = new FileServices();
     }
 
     componentDidMount() {
@@ -32,15 +34,27 @@ class ProductForm extends React.Component {
                 document.getElementById('stock').value = res.stock;
                 document.getElementById('description').value = res.description;
                 document.getElementById('unitPrice').value = res.unitPrice;
+                const productPics = this.state.productPics;
+                for (let fileName of res.images) {
+                    this.fileService.getFiles(fileName).then(res => {
+                        var file = new File([res], fileName, { type: res.type });
+                        const productPic = {
+                            file: file,
+                            src: URL.createObjectURL(file)
+                        };
+                        productPics.push(productPic);
+                        this.setState({ productPics: productPics });
+                    });
+                }
             });
             this.setState({ activeForm: true });
         } else {
             this.cleanFields();
         }
-    }
+    } 1
 
     componentDidUpdate(prevProps) {
-        if (this.props.match.params.operation === 'create' && this.state.submited) this.cleanFields()
+        if (this.props.match.params.operation === 'create' && this.state.submited) this.cleanFields();
     }
 
     saveProduct = (e) => {
@@ -51,12 +65,21 @@ class ProductForm extends React.Component {
             stock: parseInt(document.getElementById('stock').value),
             description: document.getElementById('description').value,
             unitPrice: parseFloat(document.getElementById('unitPrice').value),
-            images: ['prueba1.png', 'prueba2.png'],
+            images: [],
             type: (this.props.title === "PRODUCTO") ? 'products' : 'services'
         };
-        this.productService.saveProduct(product).then(res => {
-            this.setState({ message: res, hide: false, submited: true });
-        });
+        this.fileService.saveFiles(this.state.productPics).then(res => {
+            console.log(res);
+            if (res === "files saved successfully") {
+                for (var pic of this.state.productPics) {
+                    product.images.push(pic.file.name);
+                }
+                console.log(product);
+                this.productService.saveProduct(product).then(res => {
+                    this.setState({ message: res, hide: false, submited: true });
+                });
+            }
+        })
     }
 
     renderSwitchButton() {
@@ -80,14 +103,27 @@ class ProductForm extends React.Component {
         if (this.state.productPics.length > 0) return <ImageViewer productPics={this.state.productPics} options={{ infinite: false }} />
     }
 
-    loadFile(e) {
-        const src = URL.createObjectURL(e.target.files[0]);
+    async loadFile(e) {
+        const file = e.target.files[0];
         const productPics = this.state.productPics;
-        productPics.push(src);
+        const productPic = {
+            file: null,
+            src: URL.createObjectURL(file)
+        }
+        let blob = null;
+        await this.createBlob(productPic).then(res => blob = res);
+        var newFile = new File([blob], file.name, { type: blob.type });
+        productPic.file = newFile;
+        productPics.push(productPic);
         e.target.value = null;
         this.setState({ productPics: productPics });
-        e.preventDefault();
     };
+
+    async createBlob(productPic) {
+        let blob = null;
+        blob = await fetch(productPic.src).then(r => r.blob());
+        return blob;
+    }
 
     render() {
         return (

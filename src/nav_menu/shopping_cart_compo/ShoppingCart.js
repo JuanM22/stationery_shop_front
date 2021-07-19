@@ -7,8 +7,8 @@ class ShoppingCart extends React.Component {
 
     render() {
 
-        let productList = JSON.parse(localStorage.getItem("productList"));
-        let serviceList = JSON.parse(localStorage.getItem("serviceList"));
+        let productList = JSON.parse(sessionStorage.getItem("productList"));
+        let serviceList = JSON.parse(sessionStorage.getItem("serviceList"));
 
         return (
             <div id="cart">

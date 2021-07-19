@@ -22,8 +22,8 @@ class NavMenu extends React.Component {
     }
 
     componentDidMount(){
-        let storedProducts = JSON.parse(localStorage.getItem('productList'));
-        let storedServices = JSON.parse(localStorage.getItem('serviceList'));
+        let storedProducts = JSON.parse(sessionStorage.getItem('productList'));
+        let storedServices = JSON.parse(sessionStorage.getItem('serviceList'));
         let products = (storedProducts === null) ? [] : storedProducts;
         let services = (storedServices === null) ? [] : storedServices;
         this.setState({products: products, services: services});
