@@ -69,14 +69,12 @@ class ProductForm extends React.Component {
             type: (this.props.title === "PRODUCTO") ? 'products' : 'services'
         };
         this.fileService.saveFiles(this.state.productPics).then(res => {
-            console.log(res);
             if (res === "files saved successfully") {
                 for (var pic of this.state.productPics) {
                     product.images.push(pic.file.name);
                 }
-                console.log(product);
                 this.productService.saveProduct(product).then(res => {
-                    this.setState({ message: res, hide: false, submited: true });
+                    this.setState({ message: res, hide: false, submited: true, productPics: [] });
                 });
             }
         })
@@ -100,7 +98,7 @@ class ProductForm extends React.Component {
     }
 
     renderImageViewer() {
-        if (this.state.productPics.length > 0) return <ImageViewer productPics={this.state.productPics} options={{ infinite: false }} />
+        if (this.state.productPics.length > 0) return <ImageViewer productPics={this.state.productPics} options={{ infinite: false, slidesPerPage: 1, center: true }} />
     }
 
     async loadFile(e) {

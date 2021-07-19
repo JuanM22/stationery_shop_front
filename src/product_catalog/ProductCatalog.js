@@ -32,6 +32,7 @@ class ProductCatalog extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.productType !== prevProps.productType) {
             this.showCatalog();
+            this.setState({productImages: []});
         }
     }
 

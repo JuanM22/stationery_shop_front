@@ -18,10 +18,7 @@ function ImageViewer(props) {
 
         opts.slides = [...items].map((val) => {
             return {
-                html: val,
-                center: true,
-                fill: true,
-                friction: 0.8
+                html: val
             };
         });
 

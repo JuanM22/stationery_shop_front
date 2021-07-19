@@ -1,11 +1,18 @@
 import React from 'react';
 import './ProductPreview.css';
+import FileServices from '../services/FileServices';
 import ImageViewer from '../image_viewer/ImageViewer';
 
 class ProductPreview extends React.Component {
 
-    product = this.props.product;
-    productPics = [];
+    constructor(props) {
+        super(props);
+        this.state = {
+            productPics: []
+        }
+        this.product = this.props.product;
+        this.fileService = new FileServices();
+    }
 
     sendOrderDetailData = () => {
         const orderDetail = {
@@ -18,8 +25,23 @@ class ProductPreview extends React.Component {
     }
 
     renderImageViewer() {
-        if (this.productPics.length > 0) return <ImageViewer productPics={this.productPics} options={{ infinite: false }} />
+        if (this.state.productPics.length > 0) return <ImageViewer productPics={this.state.productPics} options={{ infinite: false }} />
     }
+
+    componentDidMount() {
+        const productPics = this.state.productPics;
+        for (let fileName of this.product.images) {
+            this.fileService.getFiles(fileName).then(res => {
+                var file = new File([res], fileName, { type: res.type });
+                const info = {
+                    src: URL.createObjectURL(file)
+                }
+                productPics.push(info);
+                this.setState({ productPics: productPics });
+            });
+        }
+    }
+
 
     render() {
         return (

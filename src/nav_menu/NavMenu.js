@@ -30,7 +30,6 @@ class NavMenu extends React.Component {
     }
 
     updateProductList = (productList) => {
-        console.log(productList);
         this.setState({ products: productList });
     }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import './OrderPreview.css';
-
+import dollar_sign from './dollar_sign.png';
+import FileServices from '../services/FileServices';
 
 class OrderPreview extends React.Component {
 
@@ -8,8 +9,48 @@ class OrderPreview extends React.Component {
         super(props);
         this.state = {
             productList: this.props.productList,
-            serviceList: this.props.serviceList
+            serviceList: this.props.serviceList,
+            dollarSignClass: "dollarMouseOut",
+            paymentPanelClass: "panelHidden",
+            orderTotalPrice: 0,
+            productPics: [],
+            servicePics: []
         }
+        this.fileService = new FileServices();
+    }
+
+    componentDidMount() {
+        this.calculateTotalPrice();
+        this.chargeProductPics(this.state.productList, "products");
+        this.chargeProductPics(this.state.serviceList, "services");
+    }
+
+    chargeProductPics(itemList, type) {
+        let pics = (type === "products") ? this.state.productPics : this.state.servicePics;
+        for (let detail of itemList) {
+            let images = (type === "products") ? detail.product.images : detail.service.images;
+            this.fileService.getFiles(images[0]).then(res => {
+                var file = new File([res], images[0], { type: res.type });
+                var src = URL.createObjectURL(file);
+                const info = {
+                    src: src
+                }
+                pics.push(info);
+                if (type === "products") this.setState({ productPics: pics });
+                else this.setState({ servicePics: pics });
+            });
+        }
+    }
+
+    calculateTotalPrice() {
+        var totalPrice = 0;
+        for (var orderDetail of this.state.productList) {
+            totalPrice += orderDetail.product.unitPrice * orderDetail.quantity;
+        }
+        for (orderDetail of this.state.serviceList) {
+            totalPrice += orderDetail.service.unitPrice * orderDetail.quantity;
+        }
+        this.setState({ orderTotalPrice: totalPrice });
     }
 
     changeDetailQuantity(detail, e) {
@@ -21,16 +62,40 @@ class OrderPreview extends React.Component {
         this.setState({ productList: productList });
     }
 
+    changeDollarClass = () => {
+        var imageCssClass = this.state.dollarSignClass;
+        imageCssClass = (imageCssClass === "") ? "dollarMouseOut" : "";
+        this.setState({ dollarSignClass: imageCssClass });
+    }
+
+    changePaymentPanelClass = () => {
+        var panelClass = this.state.paymentPanelClass;
+        panelClass = (panelClass === "panelHidden") ? "showPanel" : "panelHidden";
+        this.setState({ paymentPanelClass: panelClass });
+    }
 
     render() {
+        const orderPricePanel =
+            <div className="form-group row">
+                <div className="col-2 px-0">
+                    <img className={this.state.dollarSignClass} src={dollar_sign} alt="dollar_sign_pic" id="dollarSignPic" title="Pagar ahora" onMouseEnter={this.changeDollarClass} onMouseLeave={this.changeDollarClass} onClick={this.changePaymentPanelClass} />
+                </div>
+                <div className="card px-0 col mx-1">
+                    <div className="card-header bg-success text-white fw-bold">Valor total</div>
+                    <div className="card-body">
+                        <label>${this.state.orderTotalPrice}</label>
+                        <button className="btn btn-success mx-3">Pagar ahora</button>
+                    </div>
+                </div>
+            </div>
 
-        let orderProductsData = this.state.productList.map((detail) => {
+        let orderProductsData = this.state.productList.map((detail, index) => {
             return (
                 <div className="card" key={detail.product.productId}>
                     <h4 className="card-header bg-primary text-white">{detail.product.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
-                            <img className="mx-3 img-thumbnail border border-dark rounded" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                            <img className="mx-3 img-thumbnail border border-dark rounded" src={(this.state.productPics[index] !== undefined) ? this.state.productPics[index].src : null} alt="Product pic" />
                         </div>
                         <div className="col">
                             <div className="form-group row mx-2">
@@ -40,8 +105,8 @@ class OrderPreview extends React.Component {
                                         className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
                                 </div>
                                 <div className="col">
-                                    <label htmlFor={`${"quantity" + detail.productId}`}>Color</label>
-                                    <input id={`${"quantity" + detail.productId}`} value={detail.styleSelected} readOnly
+                                    <label htmlFor={`${"quantity" + detail.product.productId}`}>Color</label>
+                                    <input id={`${"quantity" + detail.product.productId}`} value={detail.styleSelected} readOnly
                                         className="form-control form-control-sm" />
                                 </div>
                             </div>
@@ -49,7 +114,7 @@ class OrderPreview extends React.Component {
                                 <div className="col-6">
                                     <label htmlFor={`${"price" + detail.product.productId}`}>Valor</label>
                                     <input id={`${"price" + detail.product.productId}`} value={detail.quantity * detail.product.unitPrice}
-                                        className="form-control form-control-sm" readOnly/>
+                                        className="form-control form-control-sm" readOnly />
                                 </div>
                             </div>
                         </div>
@@ -58,13 +123,13 @@ class OrderPreview extends React.Component {
             );
         });
 
-        let orderServicesData = this.state.serviceList.map((detail) => {
+        let orderServicesData = this.state.serviceList.map((detail, index) => {
             return (
                 <div className="card" key={detail.service.productId}>
                     <h4 className="card-header bg-primary text-white">{detail.service.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
-                            <img className="mx-3 img-thumbnail border border-dark rounded float-start" src="https://www.magisnet.com/wp-content/uploads/2020/05/pagina4libros.jpg" alt="Product pic" />
+                            <img className="mx-3 img-thumbnail border border-dark rounded float-start" src={(this.state.servicePics[index] !== undefined) ? this.state.servicePics[index].src : null} alt="Product pic" />
                         </div>
                         <div className="col">
                             <div className="form-group row mx-2">
@@ -118,6 +183,9 @@ class OrderPreview extends React.Component {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel">
+                    {orderPricePanel}
                 </div>
             </div>
         );
