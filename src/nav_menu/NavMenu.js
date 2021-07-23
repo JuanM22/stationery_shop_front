@@ -8,8 +8,9 @@ import {
 import ProductCatalog from '../product_catalog/ProductCatalog';
 import ProductForm from '../product_form/ProductForm';
 import ShoppingCart from './shopping_cart_compo/ShoppingCart';
+import UserProfileIcon from '../userComponents/user_profile_icon/UserProfileIcon';
+import UserProfileViewer from '../userComponents/user_profile_viewer/UserProfileViewer';
 import OrderPreview from '../order_preview/OrderPreview';
-import './NavMenu.css';
 
 class NavMenu extends React.Component {
 
@@ -69,11 +70,7 @@ class NavMenu extends React.Component {
                                     <Link className="nav-item nav-link text-white" to="/help">Ayuda</Link>
                                 </li>
                                 <ShoppingCart productList={this.state.products} serviceList={this.state.services}/>
-                                <div className="profile-header-container">
-                                    <div className="profile-header-img">
-                                        <img className="img-circle" src="https://cdn.iconscout.com/icon/free/png-512/laptop-user-1-1179329.png" alt="user ph" />
-                                    </div>
-                                </div>
+                                <UserProfileIcon />
                             </div>
                         </div>
                     </div>
@@ -93,6 +90,9 @@ class NavMenu extends React.Component {
                     </Route>
                     <Route path="/service/:operation/:id?">
                         <ProductForm title="SERVICIO" />
+                    </Route>
+                    <Route path="/userProfile/:operation/:id?">
+                        <UserProfileViewer />
                     </Route>
                 </Switch>
             </Router>

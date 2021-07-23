@@ -1,4 +1,8 @@
-#buttons > button{
-    margin-left: 48%;
-    margin-right: 2%;
+#buttons button, a {
+    width: 20%;
+}
+
+#buttons button {
+    margin-right: 1%;
+    margin-left: 55%;
 }

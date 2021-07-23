@@ -1,0 +1,13 @@
+#userInfoContainer{
+    margin-top: 6%;
+    margin-bottom: 2%;
+}
+
+#userProfilePicContainer{
+    width: 28%;
+}
+
+#userProfilePic {
+    width: 100%;
+    height: 53.5vh;
+}

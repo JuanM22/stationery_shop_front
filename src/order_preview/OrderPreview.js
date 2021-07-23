@@ -2,12 +2,14 @@ import React from 'react';
 import './OrderPreview.css';
 import dollar_sign from './dollar_sign.png';
 import FileServices from '../services/FileServices';
+import OrderServices from '../services/OrderServices';
 
 class OrderPreview extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            orderId: 0,
             productList: this.props.productList,
             serviceList: this.props.serviceList,
             dollarSignClass: "dollarMouseOut",
@@ -17,6 +19,7 @@ class OrderPreview extends React.Component {
             servicePics: []
         }
         this.fileService = new FileServices();
+        this.orderService = new OrderServices();
     }
 
     componentDidMount() {
@@ -74,6 +77,29 @@ class OrderPreview extends React.Component {
         this.setState({ paymentPanelClass: panelClass });
     }
 
+    saveOrder = () => {
+        var dispatchDate = new Date().toLocaleDateString();
+        var deliveryDate = new Date();
+        deliveryDate.setDate(deliveryDate.getDate() + 3);
+        const order = {
+            orderId : this.state.orderId,
+            customer: {
+                customerId: 1,
+                name: "Juan",
+                document: 1049653379
+            },
+            state: true,
+            dispatchDate: dispatchDate,
+            deliveryDate: deliveryDate.toLocaleDateString(),
+            totalPrice: parseFloat(document.getElementById('totalPrice').innerHTML),
+            products: this.state.productList,
+            services: this.state.serviceList
+        }
+        this.orderService.saveOrder(order).then(res => {
+            console.log(res);
+        });
+    }
+
     render() {
         const orderPricePanel =
             <div className="form-group row">
@@ -83,8 +109,8 @@ class OrderPreview extends React.Component {
                 <div className="card px-0 col mx-1">
                     <div className="card-header bg-success text-white fw-bold">Valor total</div>
                     <div className="card-body">
-                        <label>${this.state.orderTotalPrice}</label>
-                        <button className="btn btn-success mx-3">Pagar ahora</button>
+                        $<label id="totalPrice">{this.state.orderTotalPrice}</label>
+                        <button className="btn btn-success mx-3" onClick={this.saveOrder}>Pagar ahora</button>
                     </div>
                 </div>
             </div>

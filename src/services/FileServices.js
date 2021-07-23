@@ -4,12 +4,12 @@ class FileServices {
 
     url = 'http://localhost:8090/file/';
 
-    async saveFiles(productPics) {
+    async saveFiles(files) {
+        console.log(files);
         let response = '';
         const data = new FormData();
-        for (let pic of productPics) {
-            data.append('file', pic.file);
-        }
+        if (files[0] !== undefined) for (let pic of files) data.append('file', pic.file);
+        else data.append('file', files);
         await axios.post(this.url + 'save', data).then(res => {
             response = res.data;
         });

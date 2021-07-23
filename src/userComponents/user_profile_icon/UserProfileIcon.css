@@ -1,0 +1,11 @@
+.profile-header-container {
+    margin-left: 85%;
+    position: fixed;
+}
+
+.profile-header-img>img.img-circle {
+    width: 28%;
+    border-radius: 50%;
+    border: 2px solid orange;
+    background-color: cadetblue;
+}

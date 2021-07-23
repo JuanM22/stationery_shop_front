@@ -27,31 +27,12 @@ class ProductForm extends React.Component {
     componentDidMount() {
         const operation = this.props.match.params.operation;
         if (operation === 'view') {
-            const productId = this.props.match.params.id;
-            this.productService.viewProduct(productId).then(res => {
-                this.setState({ productId: res.productId });
-                document.getElementById('name').value = res.name;
-                document.getElementById('stock').value = res.stock;
-                document.getElementById('description').value = res.description;
-                document.getElementById('unitPrice').value = res.unitPrice;
-                const productPics = this.state.productPics;
-                for (let fileName of res.images) {
-                    this.fileService.getFiles(fileName).then(res => {
-                        var file = new File([res], fileName, { type: res.type });
-                        const productPic = {
-                            file: file,
-                            src: URL.createObjectURL(file)
-                        };
-                        productPics.push(productPic);
-                        this.setState({ productPics: productPics });
-                    });
-                }
-            });
+            this.viewProduct();
             this.setState({ activeForm: true });
         } else {
             this.cleanFields();
         }
-    } 1
+    }
 
     componentDidUpdate(prevProps) {
         if (this.props.match.params.operation === 'create' && this.state.submited) this.cleanFields();
@@ -78,6 +59,29 @@ class ProductForm extends React.Component {
                 });
             }
         })
+    }
+
+    viewProduct() {
+        const productId = this.props.match.params.id;
+        this.productService.viewProduct(productId).then(res => {
+            this.setState({ productId: res.productId });
+            document.getElementById('name').value = res.name;
+            document.getElementById('stock').value = res.stock;
+            document.getElementById('description').value = res.description;
+            document.getElementById('unitPrice').value = res.unitPrice;
+            const productPics = this.state.productPics;
+            for (let fileName of res.images) {
+                this.fileService.getFiles(fileName).then(res => {
+                    var file = new File([res], fileName, { type: res.type });
+                    const productPic = {
+                        file: file,
+                        src: URL.createObjectURL(file)
+                    };
+                    productPics.push(productPic);
+                    this.setState({ productPics: productPics });
+                });
+            }
+        });
     }
 
     renderSwitchButton() {
@@ -109,7 +113,7 @@ class ProductForm extends React.Component {
             src: URL.createObjectURL(file)
         }
         let blob = null;
-        await this.createBlob(productPic).then(res => blob = res);
+        await this.createBlob(productPic.src).then(res => blob = res);
         var newFile = new File([blob], file.name, { type: blob.type });
         productPic.file = newFile;
         productPics.push(productPic);
@@ -117,9 +121,9 @@ class ProductForm extends React.Component {
         this.setState({ productPics: productPics });
     };
 
-    async createBlob(productPic) {
+    async createBlob(src) {
         let blob = null;
-        blob = await fetch(productPic.src).then(r => r.blob());
+        blob = await fetch(src).then(r => r.blob());
         return blob;
     }
 
@@ -161,12 +165,12 @@ class ProductForm extends React.Component {
                                 <div className="form-group row mt-2 bg-dark py-2 rounded mx-0">
                                     {this.renderImageViewer()}
                                 </div>
-                                <div className="form-group row mt-3 py-2">
-                                    <div className="col">
-                                        <input id="image" type="file" className="form-control-file" onChange={(e) => { this.loadFile(e) }} disabled={this.state.activeForm} />
-                                    </div>
-                                    <Buttons activeForm={this.state.activeForm} changeButtonText={this.changeButtonText} />
+                            </div>
+                            <div className="form-group row mt-3 py-2">
+                                <div className="col-4">
+                                    <input id="image" type="file" className="form-control-file" onChange={(e) => { this.loadFile(e) }} disabled={this.state.activeForm} />
                                 </div>
+                                <Buttons activeForm={this.state.activeForm} changeButtonText={this.changeButtonText} />
                             </div>
                         </div>
                     </form>
