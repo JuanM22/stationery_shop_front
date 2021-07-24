@@ -7,6 +7,7 @@ import SuccessMessage from '../custom_messages/success_message_compo/SuccessMess
 import Buttons from '../form_buttons/buttons/Buttons';
 import SwitchButton from '../form_buttons/switch/SwitchButton';
 import ImageViewer from '../image_viewer/ImageViewer';
+import TableComponent from './table_compo/TableComponent';
 
 class ProductForm extends React.Component {
 
@@ -99,6 +100,7 @@ class ProductForm extends React.Component {
         document.getElementById('stock').value = '';
         document.getElementById('description').value = '';
         document.getElementById('unitPrice').value = '';
+        this.setState({rows: 0});
     }
 
     renderImageViewer() {
@@ -127,6 +129,13 @@ class ProductForm extends React.Component {
         return blob;
     }
 
+    createNewRow = (e) => {
+        e.preventDefault();
+        var rows = this.state.rows;
+        rows++;
+        this.setState({ rows: rows });
+    }
+
     render() {
         return (
             <div className="container-fluid" id="formContainer">
@@ -135,34 +144,64 @@ class ProductForm extends React.Component {
                 </div>
                 <div className="card">
                     <form className="text-white fw-bold" onSubmit={this.saveProduct}>
-                        <div className="card-header bg-dark text-white text-center fw-bold">
+                        <div className="card-header bg-primary bg-gradient text-white fw-bold">
                             <h3 className="card-title">{this.props.title}</h3>
                         </div>
-                        <div className="card-body bg-secondary">
+                        <div className="card-body bg-dark bg-gradient">
                             {this.renderSwitchButton()}
                             <div className="form-group mx-3">
                                 <div className="row">
-                                    <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
-                                        <label htmlFor="name">Nombre</label>
-                                        <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                    <div className="col-3">
+                                        <div className="mb-2">
+                                            <label htmlFor="name">Nombre</label>
+                                            <input id="name" type="text" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                        </div>
+                                        <div className="mb-2" hidden={this.props.title !== 'PRODUCTO'}>
+                                            <label htmlFor="name">Stock</label>
+                                            <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                        </div>
+                                        <div className="mb-2">
+                                            <label htmlFor="unitPrice">Precio</label>
+                                            <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                        </div>
                                     </div>
-                                    <div className="col-4" hidden={this.props.title !== 'PRODUCTO'}>
-                                        <label htmlFor="name">Stock</label>
-                                        <input id="stock" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                    <div className="col-3">
+                                        <label htmlFor="description">Descripción</label>
+                                        <textarea className="form-control" id="description" rows="6" readOnly={this.state.activeForm}></textarea>
                                     </div>
-                                    <div className={this.props.title === 'PRODUCTO' ? "col-4" : "col"}>
-                                        <label htmlFor="unitPrice">Precio</label>
-                                        <input id="unitPrice" type="number" className="form-control form-control-sm" readOnly={this.state.activeForm} />
+                                    <div className="col">
+                                        <div className="card bg-dark bg-gradient">
+                                            <div className="card-header">
+                                                <div className="form-check form-switch">
+                                                    <label className="form-check-label" htmlFor="uniqueSpecs">Editar especificaciones adicionales</label>
+                                                    <input className="form-check-input" type="checkbox" id="uniqueSpecs"></input>
+                                                </div>
+                                            </div>
+                                            <div className="card-body border-light">
+                                                <div className="row">
+                                                    <button type="button" className="btn btn-primary col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)}>Agregar especificación</button>
+                                                </div>
+                                                <div id="featuresTable">
+                                                    <table className="table table-success table-striped table-bordered border-dark">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Nombre</th>
+                                                                <th scope="col">Valor permitido</th>
+                                                                <th scope="col">Valores</th>
+                                                                <th scope="col"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <TableComponent rows={this.state.rows} />
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="form-group mt-3 mx-3">
-                                <label htmlFor="description">Descripción</label>
-                                <textarea className="form-control" id="description" rows="3" readOnly={this.state.activeForm}></textarea>
-                            </div>
-                            <div className="form-group mt-3 mx-3">
                                 <label>Imagenes</label>
-                                <div className="form-group row mt-2 bg-dark py-2 rounded mx-0">
+                                <div className="form-group row mt-2 bg-dark bg-gradient border border-light py-2 rounded mx-0">
                                     {this.renderImageViewer()}
                                 </div>
                             </div>

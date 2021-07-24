@@ -4,7 +4,7 @@ import './FilterComponent.css';
 const FilterComponent = () => {
 
     return (
-        <div id="filter">
+        <div id="filter" className="bg-light">
             <div className="card-header bg-success text-white">Filtros</div>
             <div className="form-check mt-2 mx-2">
                 <div className="d-flex">

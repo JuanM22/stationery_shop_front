@@ -20,9 +20,9 @@ class OrderServices {
         return product;
     }
 
-    async listOrders(customerId) {
+    async listOrders(userId) {
         let data = [];
-        await axios.get(this.url + 'list', { params: { customerId: customerId } }).then(res => {
+        await axios.get(this.url + 'list', { params: { userId: userId } }).then(res => {
             data = res.data;
         });
         return data;

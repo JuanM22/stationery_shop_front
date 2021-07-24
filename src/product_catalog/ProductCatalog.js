@@ -108,18 +108,18 @@ class ProductCatalog extends React.Component {
         const products = this.state.products.map((product, index) => {
             var route = this.props.productType === "products" ? '/product' : '/service';
             return (
-                <div className="card mb-2 bg-light" key={product.productId}>
-                    <div className="border border-dark">
+                <div className="card mb-2 bg-dark bg-gradient" key={product.productId}>
+                    <div className="border border-light">
                         <div className="card-body">
                             <div className="form-group row mt-2">
-                                <div className="col-3 bg-dark" id="catalogProductPic">
-                                    <img className="img-thumbnail rounded" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
-                                    <div className="bg-dark mt-2">
+                                <div className="col-3 bg-light mx-2 rounded" id="catalogProductPic">
+                                    <img className="img-thumbnail rounded border-dark" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
+                                    <div className="bg-dark my-2">
                                         <label className="text-white">Precio: ${product.unitPrice}</label>
                                     </div>
                                 </div>
-                                <div className="col px-0 mx-4 border border-dark">
-                                    <div className="card-title bg-primary text-white fw-bold py-3">{product.name}</div>
+                                <div className="col px-0 mx-4 border border-light">
+                                    <div className="card-title bg-primary bg-gradient text-white fw-bold py-3">{product.name}</div>
                                     <div className="my-5">
                                         <Link className="btn btn-primary text-white w-25" to={route + "/view/" + product.productId}>Ver en detalle</Link>
                                         <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>

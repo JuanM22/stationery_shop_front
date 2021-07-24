@@ -11,6 +11,7 @@ import ShoppingCart from './shopping_cart_compo/ShoppingCart';
 import UserProfileIcon from '../userComponents/user_profile_icon/UserProfileIcon';
 import UserProfileViewer from '../userComponents/user_profile_viewer/UserProfileViewer';
 import OrderPreview from '../order_preview/OrderPreview';
+import OrderList from '../order_list_component/OrderList';
 
 class NavMenu extends React.Component {
 
@@ -41,7 +42,7 @@ class NavMenu extends React.Component {
     render() {
         return (
             <Router>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-primary fw-bold fixed-top" id="navBar">
+                <nav className="navbar navbar-expand-lg navbar-dark bg-primary bg-gradient fw-bold fixed-top" id="navBar">
                     <div className="container-fluid">
                         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                             <div className="navbar-nav">
@@ -84,6 +85,9 @@ class NavMenu extends React.Component {
                     </Route>
                     <Route path="/order">
                         <OrderPreview productList={this.state.products} serviceList={this.state.services} />
+                    </Route>
+                    <Route path="/orders">
+                        <OrderList />
                     </Route>
                     <Route path="/services">
                         <ProductCatalog updateServiceList={this.updateServiceList} productType="services" services={this.state.services}/>

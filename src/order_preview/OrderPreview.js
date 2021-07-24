@@ -83,8 +83,8 @@ class OrderPreview extends React.Component {
         deliveryDate.setDate(deliveryDate.getDate() + 3);
         const order = {
             orderId : this.state.orderId,
-            customer: {
-                customerId: 1,
+            user: {
+                userId: 1,
                 name: "Juan",
                 document: 1049653379
             },

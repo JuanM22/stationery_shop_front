@@ -1,5 +1,10 @@
-#formContainer{
+#formContainer {
     margin-top: 6%;
     margin-bottom: 2%;
     height: 100%;
+}
+
+#featuresTable {
+    height: 13em;
+    overflow-y: auto;
 }
