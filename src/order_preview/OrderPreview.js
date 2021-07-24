@@ -82,7 +82,7 @@ class OrderPreview extends React.Component {
         var deliveryDate = new Date();
         deliveryDate.setDate(deliveryDate.getDate() + 3);
         const order = {
-            orderId : this.state.orderId,
+            orderId: this.state.orderId,
             user: {
                 userId: 1,
                 name: "Juan",
@@ -98,6 +98,29 @@ class OrderPreview extends React.Component {
         this.orderService.saveOrder(order).then(res => {
             console.log(res);
         });
+    }
+
+    createInputField(feature, value) {
+        const inputClass = (feature.type === "file") ? "form-control-file" : "form-control form-control-sm"
+        return (
+            <div className="col mt-1" key={feature.name}>
+                <label htmlFor={feature.name} className="mx-2">{feature.name}</label>
+                <input type={feature.type} className={inputClass} id={feature.name} value={value}></input>
+            </div>
+        )
+    }
+
+    createComboBoxField(feature, value) {
+        return (
+            <div className="col mt-1" key={feature.name}>
+                <label htmlFor={feature.name}>{feature.name}</label>
+                <select className="form-control form-control-sm" id={feature.name} value={value}>
+                    {feature.values.map((item, index) => {
+                        return (<option value={item} key={index}>{item}</option>)
+                    })}
+                </select>
+            </div>
+        )
     }
 
     render() {
@@ -116,6 +139,10 @@ class OrderPreview extends React.Component {
             </div>
 
         let orderProductsData = this.state.productList.map((detail, index) => {
+            const customFields = detail.product.featureList.map((feature, index) => {
+                return (feature.type === 'select') ? this.createComboBoxField(feature, detail.features[index].value) : this.createInputField(feature);
+            });
+
             return (
                 <div className="card" key={detail.product.productId}>
                     <h4 className="card-header bg-primary text-white">{detail.product.name}</h4>
@@ -126,22 +153,28 @@ class OrderPreview extends React.Component {
                         <div className="col">
                             <div className="form-group row mx-2">
                                 <div className="col">
-                                    <label htmlFor={`${"quantity" + detail.product.productId}`}>Cantidad</label>
-                                    <input id={`${"quantity" + detail.product.productId}`} type="number" value={detail.quantity} min="1"
-                                        className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
+                                    <div className="mb-2">
+                                        <label htmlFor={`${"quantity" + detail.product.productId}`}>Cantidad</label>
+                                        <input id={`${"quantity" + detail.product.productId}`} type="number" value={detail.quantity} min="1"
+                                            className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
+                                    </div>
+                                    <div>
+                                        <label htmlFor={`${"price" + detail.product.productId}`}>Valor</label>
+                                        <input id={`${"price" + detail.product.productId}`} value={detail.quantity * detail.product.unitPrice}
+                                            className="form-control form-control-sm" readOnly />
+                                    </div>
                                 </div>
                                 <div className="col">
-                                    <label htmlFor={`${"quantity" + detail.product.productId}`}>Color</label>
-                                    <input id={`${"quantity" + detail.product.productId}`} value={detail.styleSelected} readOnly
-                                        className="form-control form-control-sm" />
+                                    <div className="card">
+                                        <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
+                                        <div className="card-body" id="customFieldsContainer">
+                                            {customFields}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group row mx-2 mt-2">
-                                <div className="col-6">
-                                    <label htmlFor={`${"price" + detail.product.productId}`}>Valor</label>
-                                    <input id={`${"price" + detail.product.productId}`} value={detail.quantity * detail.product.unitPrice}
-                                        className="form-control form-control-sm" readOnly />
-                                </div>
+
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,15 @@
+#featurePreviewContainer {
+    background-color: rgba(5, 108, 167, 0.63);
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#closeFeaturePreviewBtn {
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 60%;
+}

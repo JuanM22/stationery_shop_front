@@ -5,7 +5,6 @@ class FileServices {
     url = 'http://localhost:8090/file/';
 
     async saveFiles(files) {
-        console.log(files);
         let response = '';
         const data = new FormData();
         if (files[0] !== undefined) for (let pic of files) data.append('file', pic.file);

@@ -8,6 +8,7 @@ import Buttons from '../form_buttons/buttons/Buttons';
 import SwitchButton from '../form_buttons/switch/SwitchButton';
 import ImageViewer from '../image_viewer/ImageViewer';
 import TableComponent from './table_compo/TableComponent';
+import FeaturePreview from './table_compo/feature_preview_compo/FeaturePreview';
 
 class ProductForm extends React.Component {
 
@@ -19,7 +20,9 @@ class ProductForm extends React.Component {
             message: '',
             productId: 0,
             productPics: [],
-            submited: false
+            submited: false,
+            showfeaturePreview: true,
+            featureList: []
         }
         this.productService = new ProductServices();
         this.fileService = new FileServices();
@@ -48,7 +51,8 @@ class ProductForm extends React.Component {
             description: document.getElementById('description').value,
             unitPrice: parseFloat(document.getElementById('unitPrice').value),
             images: [],
-            type: (this.props.title === "PRODUCTO") ? 'products' : 'services'
+            type: (this.props.title === "PRODUCTO") ? 'products' : 'services',
+            featureList: this.state.featureList
         };
         this.fileService.saveFiles(this.state.productPics).then(res => {
             if (res === "files saved successfully") {
@@ -65,7 +69,7 @@ class ProductForm extends React.Component {
     viewProduct() {
         const productId = this.props.match.params.id;
         this.productService.viewProduct(productId).then(res => {
-            this.setState({ productId: res.productId });
+            this.setState({ productId: res.productId, featureList: res.featureList });
             document.getElementById('name').value = res.name;
             document.getElementById('stock').value = res.stock;
             document.getElementById('description').value = res.description;
@@ -100,7 +104,7 @@ class ProductForm extends React.Component {
         document.getElementById('stock').value = '';
         document.getElementById('description').value = '';
         document.getElementById('unitPrice').value = '';
-        this.setState({rows: 0});
+        this.setState({ featureList: [] });
     }
 
     renderImageViewer() {
@@ -131,9 +135,32 @@ class ProductForm extends React.Component {
 
     createNewRow = (e) => {
         e.preventDefault();
-        var rows = this.state.rows;
-        rows++;
-        this.setState({ rows: rows });
+        this.setState({ showfeaturePreview: false });
+    }
+
+    renderFeaturePreview() {
+        if (!this.state.showfeaturePreview) {
+            return (
+                <FeaturePreview appenFeatureToList={this.appenFeatureToList} closeFeaturePreview={this.closeFeaturePreview} />
+            )
+        }
+    }
+
+    closeFeaturePreview = () => {
+        this.setState({ showfeaturePreview: true });
+    }
+
+    appenFeatureToList = (feature) => {
+        const featureList = this.state.featureList;
+        featureList.push(feature);
+        this.setState({ featureList: featureList, showfeaturePreview: true });
+    }
+
+    removeFeature = (index, e) => {
+        e.preventDefault();
+        const featureList = this.state.featureList;
+        featureList.splice(index, 1);
+        this.setState({featureList: featureList});
     }
 
     render() {
@@ -191,7 +218,7 @@ class ProductForm extends React.Component {
                                                                 <th scope="col"></th>
                                                             </tr>
                                                         </thead>
-                                                        <TableComponent rows={this.state.rows} />
+                                                        <TableComponent featureList={this.state.featureList} removeFeature={this.removeFeature} />
                                                     </table>
                                                 </div>
                                             </div>
@@ -214,6 +241,7 @@ class ProductForm extends React.Component {
                         </div>
                     </form>
                 </div>
+                {this.renderFeaturePreview()}
             </div>
         );
     }

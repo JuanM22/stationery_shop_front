@@ -10,52 +10,48 @@ class TableComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.rows !== this.props.rows) this.createTableBody();
-    }
-
-    enableValueSelect(e, key) {
-        if(e.target.value === 'select') document.getElementById('select'+ key).hidden = false;
-        else document.getElementById('select'+ key).hidden = true;
-    }
-
-    Row = (key) => {
-        return (
-            <tr key={key}>
-                <td><input className="form-control form-control-sm"></input></td>
-                <td>
-                    <select className="form-control form-control-sm" onChange={(e) => {this.enableValueSelect(e, key)}}>
-                        <option value="none">--Seleccione--</option>
-                        <option value="text">Texto</option>
-                        <option value="number">Númerico</option>
-                        <option value="select">Lista desplegable</option>
-                        <option value="check">Check Box</option>
-                        <option value="file">Archivo</option>
-                    </select>
-                </td>
-                <td>
-                    <select className="form-control form-control-sm" id={`select${key}`} hidden>
-                        <option>--Seleccione--</option>
-                    </select>
-                </td>
-                <td><button className="btn btn-danger" onClick={(e) => this.removeRow(key, e)}>Quitar</button></td>
-            </tr>
-        )
-    }
-
-    removeRow = (key, e) => {
-        e.preventDefault();
-        const tableBody = this.state.tableBody;
-        var index = tableBody.findIndex(element => element.key === key.toString());
-        tableBody.splice(index, 1);
-        this.setState({ tableBody: tableBody });
+        if (this.state.tableBody.length !== this.props.featureList.length) this.createTableBody();
     }
 
     createTableBody() {
-        const tableBody = this.state.tableBody;
-        var rows = this.props.rows;
-        if (rows > 0) {
-            tableBody.push(this.Row(rows));
-            this.setState({ tableBody: tableBody });
+        let tableBody = this.state.tableBody;
+        var featureList = this.props.featureList;
+        const translations = this.valuesTranslations();
+        tableBody = featureList.map((feature, index) => {
+            const values = this.mapFeaturesValues(feature);
+            return (
+                <tr key={index}>
+                    <td>{feature.name}</td>
+                    <td>{translations[feature.type]}</td>
+                    {(values != null) ? <td> <select className="form-control form-control-sm"> {values}  </select> </td>
+                        : <td>N/A</td>
+                    }
+                    <td><button className="btn btn-danger" onClick={(e) => this.props.removeFeature(featureList.indexOf(feature), e)}>Quitar</button></td>
+                </tr>
+            )
+        })
+        this.setState({ tableBody: tableBody });
+    }
+
+    mapFeaturesValues(feature) {
+        let values = null;
+        if (feature.values !== undefined) {
+            values = feature.values.map((value) => {
+                return (
+                    <option value={value} key={value}>{value}</option>
+                )
+            });
+        }
+        return values;
+    }
+
+    valuesTranslations() {
+        return {
+            "text": "Texto",
+            "number": "Númerico",
+            "select": "Lista Desplegable",
+            "check": "Check Box",
+            "file": "Archivo"
         }
     }
 

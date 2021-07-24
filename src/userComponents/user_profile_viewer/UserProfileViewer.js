@@ -88,10 +88,12 @@ class UserProfileViewer extends React.Component {
             document.getElementById('address').value = user.address;
             document.getElementById('email').value = user.email;
             document.getElementById('password').value = user.password;
-            this.setState({user: user, userPicture : user.userPicture});
             this.fileService.getFiles(user.userPicture).then(res => {
                 document.getElementById('userProfilePic').src = URL.createObjectURL(res);
+                var file = new File([res], user.userPicture, {type: res.type});
+                this.setState({userPicture: file});
             })
+            this.setState({user: user});
         });
     }
 

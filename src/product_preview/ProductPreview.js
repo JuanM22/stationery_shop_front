@@ -8,7 +8,8 @@ class ProductPreview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            productPics: []
+            productPics: [],
+            customFields: []
         }
         this.product = this.props.product;
         this.fileService = new FileServices();
@@ -18,8 +19,10 @@ class ProductPreview extends React.Component {
         const orderDetail = {
             product: this.product,
             quantity: parseInt(document.getElementById('quantity').value),
-            styleSelected: document.getElementById('style').value
+            features: []
         }
+        this.extractCustomInputValues(orderDetail.features);
+        this.extractCustomComboBoxValues(orderDetail.features);
         this.props.setProduct(orderDetail);
         this.props.closePreview();
     }
@@ -42,8 +45,51 @@ class ProductPreview extends React.Component {
         }
     }
 
+    extractCustomInputValues(features) {
+       const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('input');
+       for (let i = 0; i < inputs.length; i++) {
+            var item = inputs[i];
+            features.push({name: item.id, value: item.value});
+        }
+    }
+
+    extractCustomComboBoxValues(features) {
+        const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('select');
+        for (let i = 0; i < inputs.length; i++) {
+             var item = inputs[i];
+             features.push({name: item.id, value: item.value});
+        }
+     }
+
+    createInputField(feature) {
+        const inputClass = (feature.type === "file") ? "form-control-file" : "form-control form-control-sm"
+        return (
+            <div className="col my-2" key={feature.name}>
+                <label htmlFor={feature.name} className="mx-2">{feature.name}</label>
+                <input type={feature.type} className={inputClass} id={feature.name}></input>
+            </div>
+        )
+    }
+
+    createComboBoxField(feature) {
+        return (
+            <div className="col my-2" key={feature.name}>
+                <label htmlFor={feature.name}>{feature.name}</label>
+                <select className="form-control form-control-sm" id={feature.name}>
+                    {feature.values.map((item, index) => {
+                        return (<option value={item} key={index}>{item}</option>)
+                    })}
+                </select>
+            </div>
+        )
+    }
 
     render() {
+
+        const customFields = this.props.product.featureList.map((feature, index) => {
+            return (feature.type === 'select') ? this.createComboBoxField(feature) : this.createInputField(feature);
+        });
+
         return (
             <div className="container py-3 my-3 bg-light border border-4 border-warning rounded" id="productPreview">
                 <div className="bg-primary text-white">
@@ -57,19 +103,17 @@ class ProductPreview extends React.Component {
                     <p className="py-2 lead border border-top-0 border-dark">{this.product.description}</p>
                 </div>
                 <div className="form-group row my-2 mx-3">
-                    <div className="col-sm">
+                    <div className="col-4">
                         <label>Cantidad</label>
                         <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
                     </div>
-                    <div className="col-sm">
-                        <label>Color</label>
-                        <select className="form-control form-control-sm" id='style'>
-                            <option>--Seleccione--</option>
-                            <option>ROJO</option>
-                            <option>VERDE</option>
-                            <option>AZUL</option>
-                            <option>AMARILLO</option>
-                        </select>
+                    <div className="col">
+                        <div className="card">
+                            <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
+                            <div className="card-body" id="customFieldsContainer">
+                                {customFields}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="closePreviewBtn">
