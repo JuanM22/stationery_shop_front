@@ -7,7 +7,6 @@ import ProductServices from '../services/ProductServices';
 import FileServices from '../services/FileServices';
 import FilterComponent from '../filter_compo/FilterComponent';
 import ProductPreview from '../product_preview/ProductPreview';
-import ServicePreview from '../servicePreview/ServicePreview';
 
 class ProductCatalog extends React.Component {
 
@@ -16,7 +15,7 @@ class ProductCatalog extends React.Component {
         this.state = {
             products: [],
             hide: true,
-            product: null,
+            item: null,
             orderProducts: this.props.products,
             orderServices: this.props.services,
             productImages: []
@@ -32,7 +31,7 @@ class ProductCatalog extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.productType !== prevProps.productType) {
             this.showCatalog();
-            this.setState({productImages: []});
+            this.setState({ productImages: [] });
         }
     }
 
@@ -58,6 +57,11 @@ class ProductCatalog extends React.Component {
         });
     }
 
+    setItem(orderDetail) {
+        if (this.props.productType === "products") this.setProduct(orderDetail);
+        else this.setService(orderDetail);
+    }
+
     setProduct = (orderDetail) => {
         const orderProducts = this.state.orderProducts;
         orderProducts.push(orderDetail);
@@ -74,8 +78,8 @@ class ProductCatalog extends React.Component {
         this.setState({ orderServices: orderServices });
     }
 
-    showProductPreview = (product) => {
-        this.setState({ hide: false, product: product });
+    showProductPreview = (item) => {
+        this.setState({ hide: false, item: item });
     }
 
     closePreview = () => this.setState({ hide: true });
@@ -84,11 +88,7 @@ class ProductCatalog extends React.Component {
         if (!this.state.hide) {
             return (
                 <div id="addToCartForm">
-                    {this.props.productType === 'products' ?
-                        <ProductPreview product={this.state.product} setProduct={this.setProduct} closePreview={this.closePreview} />
-                        :
-                        <ServicePreview service={this.state.product} setService={this.setService} closePreview={this.closePreview} />
-                    }
+                    <ProductPreview item={this.state.item} setItem={this.setItem} closePreview={this.closePreview} />
                 </div>
             )
         }
@@ -105,25 +105,23 @@ class ProductCatalog extends React.Component {
     }
 
     render() {
-        const products = this.state.products.map((product, index) => {
+        const products = this.state.products.map((item, index) => {
             var route = this.props.productType === "products" ? '/product' : '/service';
             return (
-                <div className="card mb-2 bg-dark bg-gradient" key={product.productId}>
-                    <div className="border border-light">
-                        <div className="card-body">
-                            <div className="form-group row mt-2">
-                                <div className="col-3 bg-light mx-2 rounded" id="catalogProductPic">
-                                    <img className="img-thumbnail rounded border-dark" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
-                                    <div className="bg-dark my-2">
-                                        <label className="text-white">Precio: ${product.unitPrice}</label>
-                                    </div>
+                <div className="card mb-2 bg-dark border border-light bg-gradient" key={item.productId}>
+                    <div className="card-body">
+                        <div className="form-group row mt-2">
+                            <div className="col-3 bg-light mx-2 rounded" id="catalogProductPic">
+                                <img className="img-thumbnail rounded border-dark" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
+                                <div className="bg-dark my-2 text-center">
+                                    <label className="text-white">Precio: ${item.unitPrice}</label>
                                 </div>
-                                <div className="col px-0 mx-4 border border-light">
-                                    <div className="card-title bg-primary bg-gradient text-white fw-bold py-3">{product.name}</div>
-                                    <div className="my-5">
-                                        <Link className="btn btn-primary text-white w-25" to={route + "/view/" + product.productId}>Ver en detalle</Link>
-                                        <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(product)}>Añadir al carrito</button>
-                                    </div>
+                            </div>
+                            <div className="col px-0 mx-4 border border-light">
+                                <div className="card-title bg-primary bg-gradient text-white fw-bold py-3 text-center">{item.name}</div>
+                                <div className="my-5 text-center">
+                                    <Link className="btn btn-primary text-white w-25" to={route + "/view/" + item.productId}>Ver en detalle</Link>
+                                    <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(item)}>Añadir al carrito</button>
                                 </div>
                             </div>
                         </div>
@@ -132,13 +130,17 @@ class ProductCatalog extends React.Component {
             );
         });
         return (
-            <div>
-                <FilterComponent />
-                <div className="container d-block position-absolute" id="catalogContainer">
-                    {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
+            <div className="container-fluid d-block position-absolute" id="catalogContainer">
+                <div className="row">
+                    <div className="col-10">
+                        {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
+                    </div>
+                    <div className="col-2">
+                        <FilterComponent />
+                    </div>
+                    {this.renderProductPreview()}
                 </div>
-                {this.renderProductPreview()}
-            </div >
+            </div>
         );
     }
 }

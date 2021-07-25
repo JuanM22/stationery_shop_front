@@ -7,6 +7,7 @@ import SuccessMessage from '../../custom_messages/success_message_compo/SuccessM
 import Buttons from '../../form_buttons/buttons/Buttons';
 import SwitchButton from '../../form_buttons/switch/SwitchButton';
 
+import LoginServices from '../../services/LoginServices';
 import UserServices from '../../services/UserServices';
 import CityServices from '../../services/CityServices';
 import FileServices from '../../services/FileServices';
@@ -19,11 +20,12 @@ class UserProfileViewer extends React.Component {
             activeForm: false,
             hide: true,
             message: '',
-            user: {},
+            user: { userId: 0 },
             submited: false,
             userPicture: null,
             cities: []
         }
+        this.loginService = new LoginServices();
         this.userService = new UserServices();
         this.cityService = new CityServices();
         this.fileService = new FileServices();
@@ -36,7 +38,7 @@ class UserProfileViewer extends React.Component {
             this.viewUser();
             this.setState({ activeForm: true });
         } else {
-            this.cleanFields();
+            // this.cleanFields();
         }
     }
 
@@ -67,8 +69,12 @@ class UserProfileViewer extends React.Component {
         this.fileService.saveFiles(this.state.userPicture).then(res => {
             if (res === "files saved successfully") {
                 user.userPicture = this.state.userPicture.name;
-                this.userService.saveUser(user).then(res => {
-                    this.setState({ message: res, hide: false, submited: true, userPicture: null });
+                this.loginService.saveLogin({ loginId: 0, user: user.email, password: user.password }).then(res => {
+                    if (res === "El login ha sido creado correctamente") {
+                        this.userService.saveUser(user).then(res => {
+                            this.setState({ message: res, hide: false, submited: true, userPicture: null });
+                        });
+                    }
                 });
             }
         })
@@ -90,10 +96,10 @@ class UserProfileViewer extends React.Component {
             document.getElementById('password').value = user.password;
             this.fileService.getFiles(user.userPicture).then(res => {
                 document.getElementById('userProfilePic').src = URL.createObjectURL(res);
-                var file = new File([res], user.userPicture, {type: res.type});
-                this.setState({userPicture: file});
+                var file = new File([res], user.userPicture, { type: res.type });
+                this.setState({ userPicture: file });
             })
-            this.setState({user: user});
+            this.setState({ user: user });
         });
     }
 
@@ -131,12 +137,14 @@ class UserProfileViewer extends React.Component {
             )
         });
 
+        var containerClass = (this.props.match.params.operation === "register") ? "registerUserInfoContainer" : "UserInfoContainer";
+
         return (
-            <div className="container-fluid" id="userInfoContainer">
+            <div className="container-fluid h-100" id={containerClass}>
                 <div className="text-center" hidden={this.state.hide}>
                     <SuccessMessage message={this.state.message} />
                 </div>
-                <div className="card">
+                <div className="card" id="userForm">
                     <form className="text-white fw-bold" onSubmit={this.saveUser}>
                         <div className="card-header bg-dark text-white text-center fw-bold">
                             <h3 className="card-title">USUARIO</h3>

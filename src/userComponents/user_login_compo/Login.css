@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css?family=Numans');
+
+#loginContainer {
+    background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Numans', sans-serif;
+    position: absolute;
+}
+
+#loginCard {
+    align-content: center;
+    margin-top: 6%;
+    margin-bottom: 2%;
+    height: 25em;
+    width: 40%;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.social_icon span {
+    font-size: 60px;
+    margin-left: 4%;
+    color: #0275d8;
+}
+
+.social_icon span:hover {
+    color: white;
+    cursor: pointer;
+}
+
+#loginCardHeader h3 {
+    color: white;
+}
+
+.social_icon {
+    position: absolute;
+    right: 20px;
+    top: -10%;
+}
+
+#loginCardBody .input-group-prepend span {
+    width: 3em;
+    height: 3em;
+    background-color: #0275d8;
+    color: white;
+    border: 0 !important;
+}
+
+#loginCardBody input:focus {
+    outline: rgba(0, 0, 0, 0) !important;
+    box-shadow: rgba(0, 0, 0, 0)  !important;
+}
+
+#loginCardBody .remember {
+    color: white;
+}
+
+#loginCardBody .remember input {
+    width: 20px;
+    height: 20px;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+.login_btn {
+    color: white;
+    background-color: #0275d8;
+    width: 100px;
+    font-weight: bold;
+}
+
+#loginCardBody .login_btn:hover {
+    color: black;
+    background-color: white;
+}
+
+#loginCardFooter .links {
+    color: white;
+}
+
+#loginCardFooter .links a {
+    margin-left: 4px;
+}

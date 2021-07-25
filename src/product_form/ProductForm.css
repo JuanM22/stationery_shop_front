@@ -1,7 +1,7 @@
 #formContainer {
-    margin-top: 6%;
-    margin-bottom: 2%;
-    height: 100%;
+    padding-top: 6%;
+    padding-bottom: 2%;
+    background-color: #30d794a7;
 }
 
 #featuresTable {

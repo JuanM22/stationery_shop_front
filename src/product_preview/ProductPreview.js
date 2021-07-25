@@ -11,19 +11,19 @@ class ProductPreview extends React.Component {
             productPics: [],
             customFields: []
         }
-        this.product = this.props.product;
+        this.item = this.props.item;
         this.fileService = new FileServices();
     }
 
     sendOrderDetailData = () => {
         const orderDetail = {
-            product: this.product,
+            item: this.item,
             quantity: parseInt(document.getElementById('quantity').value),
             features: []
         }
         this.extractCustomInputValues(orderDetail.features);
         this.extractCustomComboBoxValues(orderDetail.features);
-        this.props.setProduct(orderDetail);
+        this.props.setItem(orderDetail);
         this.props.closePreview();
     }
 
@@ -33,7 +33,7 @@ class ProductPreview extends React.Component {
 
     componentDidMount() {
         const productPics = this.state.productPics;
-        for (let fileName of this.product.images) {
+        for (let fileName of this.item.images) {
             this.fileService.getFiles(fileName).then(res => {
                 var file = new File([res], fileName, { type: res.type });
                 const info = {
@@ -46,20 +46,20 @@ class ProductPreview extends React.Component {
     }
 
     extractCustomInputValues(features) {
-       const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('input');
-       for (let i = 0; i < inputs.length; i++) {
+        const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('input');
+        for (let i = 0; i < inputs.length; i++) {
             var item = inputs[i];
-            features.push({name: item.id, value: item.value});
+            features.push({ name: item.id, value: item.value });
         }
     }
 
     extractCustomComboBoxValues(features) {
         const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('select');
         for (let i = 0; i < inputs.length; i++) {
-             var item = inputs[i];
-             features.push({name: item.id, value: item.value});
+            var item = inputs[i];
+            features.push({ name: item.id, value: item.value });
         }
-     }
+    }
 
     createInputField(feature) {
         const inputClass = (feature.type === "file") ? "form-control-file" : "form-control form-control-sm"
@@ -86,26 +86,32 @@ class ProductPreview extends React.Component {
 
     render() {
 
-        const customFields = this.props.product.featureList.map((feature, index) => {
+        const customFields = this.item.featureList.map((feature, index) => {
             return (feature.type === 'select') ? this.createComboBoxField(feature) : this.createInputField(feature);
         });
 
         return (
-            <div className="container py-3 my-3 bg-light border border-4 border-warning rounded" id="productPreview">
-                <div className="bg-primary text-white">
-                    <h3 className="py-2">{this.product.name}</h3>
+            <div className="container border rounded px-0" id="productPreview">
+                <div className="bg-success bg-gradient text-white">
+                    <h3 className="py-2 mx-3">{this.item.name}</h3>
                 </div>
                 <div className="form-group row mt-2 py-2 rounded mx-0">
                     {this.renderImageViewer()}
                 </div>
-                <div className="mt-2">
-                    <h3 className="bg-primary text-white py-2 mb-0 border border-dark border-2">Descripción</h3>
-                    <p className="py-2 lead border border-top-0 border-dark">{this.product.description}</p>
+                <div className="container">
+                    <h3 className="bg-success bg-gradient text-white py-2 mb-0">Descripción</h3>
+                    {/* <div className="top-0 bg-light"> */}
+                    <p className="py-5 lead border-dark bg-light">{this.item.description}</p>
+                    {/* </div> */}
                 </div>
-                <div className="form-group row my-2 mx-3">
+                <div className="container form-group row my-2">
                     <div className="col-4">
-                        <label>Cantidad</label>
-                        <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
+                        <div className="card">
+                            <div className="card-header bg-primary bg-gradient text-white fw-bold">Cantidad</div>
+                        </div>
+                        <div className="card-body bg-light">
+                            <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
+                        </div>
                     </div>
                     <div className="col">
                         <div className="card">

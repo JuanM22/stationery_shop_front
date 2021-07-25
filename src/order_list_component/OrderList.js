@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './OrderList.css';
 
+import FilterComponent from '../filter_compo/FilterComponent';
 import OrderServices from '../services/OrderServices';
 
 class OrderList extends React.Component {
@@ -64,11 +65,18 @@ class OrderList extends React.Component {
 
 
         return (
-            <div id="ordersContainer" className="container float-start">
-                <div className="card border-light border-2">
-                    <div className="card-header fw-bold bg-primary bg-gradient text-white">PEDIDOS</div>
-                    <div className="card-body bg-dark bg-gradient">
-                        {ordersData}
+            <div id="ordersContainer" className="container-fluid">
+                <div className="row">
+                    <div className="col-10">
+                        <div className="card border-light border-2">
+                            <div className="card-header fw-bold bg-success bg-gradient text-white py-3"><h2>PEDIDOS</h2></div>
+                            <div className="card-body bg-dark bg-gradient">
+                                {ordersData}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-2">
+                        <FilterComponent />
                     </div>
                 </div>
             </div>

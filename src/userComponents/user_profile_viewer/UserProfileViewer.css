@@ -1,6 +1,14 @@
-#userInfoContainer{
-    margin-top: 6%;
-    margin-bottom: 2%;
+#registerUserInfoContainer{
+    background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;   
+    padding-top: 5%;
+    padding-left: 5%; 
+    padding-right: 5%; 
+}
+
+#UserInfoContainer{
+    padding-top: 6%;
 }
 
 #userProfilePicContainer{

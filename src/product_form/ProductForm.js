@@ -171,7 +171,7 @@ class ProductForm extends React.Component {
                 </div>
                 <div className="card">
                     <form className="text-white fw-bold" onSubmit={this.saveProduct}>
-                        <div className="card-header bg-primary bg-gradient text-white fw-bold">
+                        <div className="card-header bg-success bg-gradient text-white fw-bold">
                             <h3 className="card-title">{this.props.title}</h3>
                         </div>
                         <div className="card-body bg-dark bg-gradient">
@@ -206,7 +206,7 @@ class ProductForm extends React.Component {
                                             </div>
                                             <div className="card-body border-light">
                                                 <div className="row">
-                                                    <button type="button" className="btn btn-primary col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)}>Agregar especificación</button>
+                                                    <button type="button" className="btn btn-success col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)}>Agregar especificación</button>
                                                 </div>
                                                 <div id="featuresTable">
                                                     <table className="table table-success table-striped table-bordered border-dark">
