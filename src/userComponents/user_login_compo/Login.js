@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-// import {browserHistory} from "react-router";
 
 import './Login.css';
 import LoginServices from '../../services/LoginServices';
@@ -23,9 +22,10 @@ class Login extends React.Component {
         }
         this.loginService.checkLogin(login).then(res => {
             if (res.loginId > 0) {
+                localStorage.setItem("userId", res.loginId);
+                localStorage.setItem("logged", true);
                 this.props.showMenu();
                 this.setState({ logged: true });
-                sessionStorage.setItem("userId", res.loginId);
             } else {
                 alert("Credenciales incorrectas!!!");
             }
@@ -33,7 +33,7 @@ class Login extends React.Component {
     }
 
     redirectToApp() {
-        if (this.state.logged) return (<Redirect from="/login" to="/home" />)
+        if (this.state.logged) return (<Redirect to="/home" />)
     }
 
     render() {

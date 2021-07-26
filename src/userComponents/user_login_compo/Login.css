@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
 #loginContainer {
-    background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
+    background-image: url('./login_background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     font-family: 'Numans', sans-serif;
