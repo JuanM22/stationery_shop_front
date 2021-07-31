@@ -6,7 +6,7 @@ class UserServices {
 
     async saveUser(user) {
         let response = '';
-        await axios.post(this.url + 'save', user).then(res => {
+        await axios.post((user.userId > 0) ? this.url + 'save' : this.url + 'register', user, { withCredentials: true }).then(res => {
             response = res.data;
         });
         return response;
@@ -14,7 +14,7 @@ class UserServices {
 
     async viewUser(userId) {
         let product = null;
-        await axios.get(this.url + 'view/' + userId).then(res => {
+        await axios.get(this.url + 'view/' + userId, { withCredentials: true }).then(res => {
             product = res.data;
         });
         return product;
@@ -22,7 +22,7 @@ class UserServices {
 
     async listUsers(userId) {
         let data = [];
-        await axios.get(this.url + 'list', { params: { userId: userId } }).then(res => {
+        await axios.get(this.url + 'list', { params: { userId: userId } , withCredentials: true}).then(res => {
             data = res.data;
         });
         return data;

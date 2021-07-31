@@ -37,8 +37,8 @@ class NavMenu extends React.Component {
                             <li className="nav-link">
                                 <Link className="nav-item nav-link text-white" to="/help">Ayuda</Link>
                             </li>
-                            <ShoppingCart productList={this.props.products} serviceList={this.props.services} />
-                            <UserProfileIcon showMenu={this.props.showMenu} />
+                            <ShoppingCart />
+                            <UserProfileIcon />
                         </div>
                     </div>
                 </div>

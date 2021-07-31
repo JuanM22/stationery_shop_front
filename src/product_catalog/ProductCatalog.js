@@ -57,25 +57,20 @@ class ProductCatalog extends React.Component {
         });
     }
 
-    setItem(orderDetail) {
-        if (this.props.productType === "products") this.setProduct(orderDetail);
-        else this.setService(orderDetail);
+    setItem = (orderDetail) => {
+        const data = this.props.chargeOrderInfo();
+        if (this.props.productType === "products") this.setProduct(orderDetail, data[0]);
+        else this.setService(orderDetail, data[1]);
     }
 
-    setProduct = (orderDetail) => {
-        const orderProducts = this.state.orderProducts;
-        orderProducts.push(orderDetail);
-        this.props.updateProductList(this.state.orderProducts);
-        sessionStorage.setItem('productList', JSON.stringify(this.state.orderProducts));
-        this.setState({ orderProducts: orderProducts });
+    setProduct = (orderDetail, productList) => {
+        productList.push(orderDetail);
+        sessionStorage.setItem('productList', JSON.stringify(productList));
     }
 
-    setService = (orderDetail) => {
-        const orderServices = this.state.orderServices;
-        orderServices.push(orderDetail);
-        this.props.updateServiceList(this.state.orderServices);
-        sessionStorage.setItem('serviceList', JSON.stringify(this.state.orderServices));
-        this.setState({ orderServices: orderServices });
+    setService = (orderDetail, serviceList) => {
+        serviceList.push(orderDetail);
+        sessionStorage.setItem('serviceList', JSON.stringify(serviceList));
     }
 
     showProductPreview = (item) => {

@@ -6,7 +6,7 @@ class CityServices {
 
     async listCities() {
         let data = [];
-        await axios.get(this.url + 'list').then(res => {
+        await axios.get(this.url + 'list', { withCredentials: true }).then(res => {
             data = res.data;
         });
         return data;

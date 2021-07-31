@@ -104,7 +104,6 @@ class ProductForm extends React.Component {
         document.getElementById('stock').value = '';
         document.getElementById('description').value = '';
         document.getElementById('unitPrice').value = '';
-        this.setState({ featureList: [] });
     }
 
     renderImageViewer() {

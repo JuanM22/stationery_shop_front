@@ -8,10 +8,11 @@ class OrderPreview extends React.Component {
 
     constructor(props) {
         super(props);
+        const data = this.props.chargeOrderInfo();
         this.state = {
             orderId: 0,
-            productList: this.props.productList,
-            serviceList: this.props.serviceList,
+            productList: data[0],
+            serviceList: data[1],
             dollarSignClass: "dollarMouseOut",
             paymentPanelClass: "panelHidden",
             orderTotalPrice: 0,
@@ -34,7 +35,7 @@ class OrderPreview extends React.Component {
     chargeProductPics(itemList, type) {
         let pics = (type === "products") ? this.state.productPics : this.state.servicePics;
         for (let detail of itemList) {
-            let images = (type === "products") ? detail.product.images : detail.service.images;
+            let images = detail.item.images;
             this.fileService.getFiles(images[0]).then(res => {
                 var file = new File([res], images[0], { type: res.type });
                 var src = URL.createObjectURL(file);
@@ -51,10 +52,10 @@ class OrderPreview extends React.Component {
     calculateTotalPrice() {
         var totalPrice = 0;
         for (var orderDetail of this.state.productList) {
-            totalPrice += orderDetail.product.unitPrice * orderDetail.quantity;
+            totalPrice += orderDetail.item.unitPrice * orderDetail.quantity;
         }
         for (orderDetail of this.state.serviceList) {
-            totalPrice += orderDetail.service.unitPrice * orderDetail.quantity;
+            totalPrice += orderDetail.item.unitPrice * orderDetail.quantity;
         }
         this.setState({ orderTotalPrice: totalPrice });
     }
@@ -124,18 +125,15 @@ class OrderPreview extends React.Component {
     }
 
     setDates = () => {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1;
-        var yyyy = today.getFullYear();
-        if (dd < 10) dd = '0' + dd
-        if (mm < 10) mm = '0' + mm
-        var dispatchDate = yyyy + '-' + mm + '-' + dd;
-        var deliveryDate = yyyy + '-' + mm + '-' + (dd + 3);
+        var today = new Date()
+        var dispatchDate = today.toLocaleDateString('en-CA');
+        today.setDate(today.getDate() + 3);
+        var deliveryDate = today.toLocaleDateString('en-CA');
         this.setState({ dispatchDate: dispatchDate, deliveryDate: deliveryDate });
     }
 
     render() {
+
         const orderPricePanel =
             <div className="form-group row">
                 <div className="col-2 px-0">
@@ -151,13 +149,13 @@ class OrderPreview extends React.Component {
             </div>
 
         let orderProductsData = this.state.productList.map((detail, index) => {
-            const customFields = detail.product.featureList.map((feature, index) => {
+            const customFields = detail.item.featureList.map((feature, index) => {
                 return (feature.type === 'select') ? this.createComboBoxField(feature, detail.features[index].value) : this.createInputField(feature);
             });
 
             return (
-                <div className="card" key={detail.product.productId}>
-                    <h4 className="card-header bg-primary text-white">{detail.product.name}</h4>
+                <div className="card" key={detail.item.productId}>
+                    <h4 className="card-header bg-primary text-white">{detail.item.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
                             <img className="mx-3 img-thumbnail border border-dark rounded" src={(this.state.productPics[index] !== undefined) ? this.state.productPics[index].src : null} alt="Product pic" />
@@ -166,13 +164,13 @@ class OrderPreview extends React.Component {
                             <div className="form-group row mx-2">
                                 <div className="col">
                                     <div className="mb-2">
-                                        <label htmlFor={`${"quantity" + detail.product.productId}`}>Cantidad</label>
-                                        <input id={`${"quantity" + detail.product.productId}`} type="number" value={detail.quantity} min="1"
+                                        <label htmlFor={`${"quantity" + detail.item.productId}`}>Cantidad</label>
+                                        <input id={`${"quantity" + detail.item.productId}`} type="number" value={detail.quantity} min="1"
                                             className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
                                     </div>
                                     <div>
-                                        <label htmlFor={`${"price" + detail.product.productId}`}>Valor</label>
-                                        <input id={`${"price" + detail.product.productId}`} value={detail.quantity * detail.product.unitPrice}
+                                        <label htmlFor={`${"price" + detail.item.productId}`}>Valor</label>
+                                        <input id={`${"price" + detail.item.productId}`} value={detail.quantity * detail.item.unitPrice}
                                             className="form-control form-control-sm" readOnly />
                                     </div>
                                 </div>
@@ -194,10 +192,12 @@ class OrderPreview extends React.Component {
             );
         });
 
+        
+
         let orderServicesData = this.state.serviceList.map((detail, index) => {
             return (
-                <div className="card" key={detail.service.productId}>
-                    <h4 className="card-header bg-primary text-white">{detail.service.name}</h4>
+                <div className="card" key={detail.item.productId}>
+                    <h4 className="card-header bg-primary text-white">{detail.item.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
                             <img className="mx-3 img-thumbnail border border-dark rounded float-start" src={(this.state.servicePics[index] !== undefined) ? this.state.servicePics[index].src : null} alt="Product pic" />
@@ -205,20 +205,20 @@ class OrderPreview extends React.Component {
                         <div className="col">
                             <div className="form-group row mx-2">
                                 <div className="col">
-                                    <label htmlFor={`${"quantity" + detail.service.productId}`}>Cantidad</label>
-                                    <input id={`${"quantity" + detail.service.productId}`} type="number" value={detail.quantity} min="1"
+                                    <label htmlFor={`${"quantity" + detail.item.productId}`}>Cantidad</label>
+                                    <input id={`${"quantity" + detail.item.productId}`} type="number" value={detail.quantity} min="1"
                                         className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
                                 </div>
                                 <div className="col">
-                                    <label htmlFor={`${"quantity" + detail.service.productId}`}>Color</label>
-                                    <input id={`${"quantity" + detail.service.productId}`} value={detail.styleSelected} readOnly
+                                    <label htmlFor={`${"quantity" + detail.item.productId}`}>Color</label>
+                                    <input id={`${"quantity" + detail.item.productId}`} value={detail.styleSelected} readOnly
                                         className="form-control form-control-sm" />
                                 </div>
                             </div>
                             <div className="form-group row mx-2 mt-2">
                                 <div className="col-6">
-                                    <label htmlFor={`${"price" + detail.service.productId}`}>Valor</label>
-                                    <input id={`${"price" + detail.service.productId}`} value={detail.quantity * detail.service.unitPrice}
+                                    <label htmlFor={`${"price" + detail.item.productId}`}>Valor</label>
+                                    <input id={`${"price" + detail.item.productId}`} value={detail.quantity * detail.item.unitPrice}
                                         className="form-control form-control-sm" readOnly />
                                 </div>
                             </div>

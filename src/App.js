@@ -15,40 +15,48 @@ import OrderPreview from './order_preview/OrderPreview';
 import OrderList from './order_list_component/OrderList';
 import PageNotFound from './page_not_found_compo/PageNotFound';
 
+import LoginService from './services/LoginServices';
+
 class App extends React.Component {
 
   constructor(props) {
     super(props);
-    const logged = localStorage.getItem("logged");
     this.state = {
-      hideMenu: (logged === null) ? true : false,
-      products: [],
-      services: []
-    }
+      hideMenu: true
+    };
+    this._isMounted = false;
+    this.loginService = new LoginService();
   }
 
   componentDidMount() {
-    let storedProducts = JSON.parse(localStorage.getItem('productList'));
-    let storedServices = JSON.parse(localStorage.getItem('serviceList'));
+    this._isMounted = true;
+    const data = this.chargeOrderInfo();
+    this.setState({products: data[0], services: data[1]});
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this._isMounted) {
+      this.loginService.userIsLoggedIn().then(res => {
+        const data = this.chargeOrderInfo();
+        this.setState({hideMenu: !res, products: data[0], services: data[1]});
+      });
+    }
+  }
+
+  chargeOrderInfo() {
+    let storedProducts = JSON.parse(sessionStorage.getItem('productList'));
+    let storedServices = JSON.parse(sessionStorage.getItem('serviceList'));
     let products = (storedProducts === null) ? [] : storedProducts;
     let services = (storedServices === null) ? [] : storedServices;
-    this.setState({ products: products, services: services });
-  }
-
-  updateProductList = (productList) => {
-    this.setState({ products: productList });
-  }
-
-  updateServiceList = (serviceList) => {
-    this.setState({ services: serviceList });
-  }
-
-  showMenu = () => {
-    this.setState({hideMenu: localStorage.getItem("logged") === null});
+    return [products, services];
   }
 
   renderMenu() {
-    if (!this.state.hideMenu) return (<NavMenu products={this.state.products} services={this.state.services} showMenu={this.showMenu}></NavMenu>);
+    if (!this.state.hideMenu) return (<NavMenu ></NavMenu>);
   }
 
   render() {
@@ -58,7 +66,7 @@ class App extends React.Component {
           {this.renderMenu()}
           <Switch>
             <Route exact path="/login">
-              <Login showMenu={this.showMenu}/>
+              <Login />
             </Route>
             <Route exact path="/home">
               <Home />
@@ -67,16 +75,16 @@ class App extends React.Component {
               <UserProfileViewer />
             </Route>
             <Route exact path="/products">
-              <ProductCatalog updateProductList={this.updateProductList} productType="products" products={this.state.products} />
+              <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo}/>
             </Route>
             <Route exact path="/order">
-              <OrderPreview productList={this.state.products} serviceList={this.state.services} />
+              <OrderPreview chargeOrderInfo={this.chargeOrderInfo} />
             </Route>
             <Route exact path="/orders">
               <OrderList />
             </Route>
             <Route exact path="/services">
-              <ProductCatalog updateServiceList={this.updateServiceList} productType="services" services={this.state.services} />
+              <ProductCatalog productType="services" chargeOrderInfo={this.chargeOrderInfo}/>
             </Route>
             <Route exact path="/product/:operation/:id?">
               <ProductForm title="PRODUCTO" />

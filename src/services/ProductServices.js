@@ -6,7 +6,7 @@ class ProductServices {
 
     async saveProduct(product) {
         let response = '';
-        await axios.post(this.url + 'save', product).then(res => {
+        await axios.post(this.url + 'save', product, { withCredentials: true }).then(res => {
             response = res.data;
         });
         return response;
@@ -14,7 +14,7 @@ class ProductServices {
 
     async viewProduct(productId) {
         let product = null;
-        await axios.get(this.url + 'view/' + productId).then(res => {
+        await axios.get(this.url + 'view/' + productId, { withCredentials: true }).then(res => {
             product = res.data;
         });
         return product;
@@ -22,7 +22,7 @@ class ProductServices {
 
     async listProducts(productType) {
         let data = [];
-        await axios.get(this.url + 'list', { params: { productType: productType } }).then(res => {
+        await axios.get(this.url + 'list', { params: { productType: productType } , withCredentials: true} ).then(res => {
             data = res.data;
         });
         return data;

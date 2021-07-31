@@ -17,14 +17,11 @@ class Login extends React.Component {
     validateLogin = (e) => {
         e.preventDefault();
         const login = {
-            user: document.getElementById("userName").value,
+            username: document.getElementById("userName").value,
             password: document.getElementById("password").value
         }
         this.loginService.checkLogin(login).then(res => {
-            if (res.loginId > 0) {
-                localStorage.setItem("userId", res.loginId);
-                localStorage.setItem("logged", true);
-                this.props.showMenu();
+            if (res === "Login successfully") {
                 this.setState({ logged: true });
             } else {
                 alert("Credenciales incorrectas!!!");
