@@ -1,17 +1,32 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 
 import './Login.css';
 import LoginServices from '../../services/LoginServices';
+import SessionExpiredModal from '../../custom_messages/session_expired_modal/SessionExpiredModal';
 
 class Login extends React.Component {
+
 
     constructor(props) {
         super(props);
         this.state = {
-            logged: false
+            logged: false,
+            showModal: false
         }
         this.loginService = new LoginServices();
+    }
+
+    componentDidUpdate(prevProps) {
+        var expired = this.props.history.location.state?.expired;
+        if (expired) {
+            this.props.history.location.state.expired = false;
+            this.setState({ showModal: true, logged: false });
+        }
+    }
+
+    closeExpiredSessionModal = () => {
+        this.setState({ showModal: false });
     }
 
     validateLogin = (e) => {
@@ -31,6 +46,12 @@ class Login extends React.Component {
 
     redirectToApp() {
         if (this.state.logged) return (<Redirect to="/home" />)
+    }
+
+    renderExpiredSessionModal() {
+        if (this.state.showModal) return (
+            <SessionExpiredModal closeModal={this.closeExpiredSessionModal} />
+        )
     }
 
     render() {
@@ -84,6 +105,7 @@ class Login extends React.Component {
                     </div>
                 </div>
                 {this.redirectToApp()}
+                {this.renderExpiredSessionModal()}
             </div>
         )
     }
@@ -91,4 +113,4 @@ class Login extends React.Component {
 
 }
 
-export default Login;
+export default withRouter(Login);

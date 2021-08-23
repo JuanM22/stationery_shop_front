@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
@@ -16,6 +15,7 @@ import OrderList from './order_list_component/OrderList';
 import PageNotFound from './page_not_found_compo/PageNotFound';
 
 import LoginService from './services/LoginServices';
+import SessionExpiredModal from './custom_messages/session_expired_modal/SessionExpiredModal';
 
 class App extends React.Component {
 
@@ -31,7 +31,7 @@ class App extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     const data = this.chargeOrderInfo();
-    this.setState({products: data[0], services: data[1]});
+    this.setState({ products: data[0], services: data[1] });
   }
 
   componentWillUnmount() {
@@ -42,7 +42,7 @@ class App extends React.Component {
     if (this._isMounted) {
       this.loginService.userIsLoggedIn().then(res => {
         const data = this.chargeOrderInfo();
-        this.setState({hideMenu: !res, products: data[0], services: data[1]});
+        this.setState({ hideMenu: !res, products: data[0], services: data[1] });
       });
     }
   }
@@ -62,39 +62,37 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Router>
-          {this.renderMenu()}
-          <Switch>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route exact path="/home">
-              <Home />
-            </Route>
-            <Route exact path="/user/:operation/:id?">
-              <UserProfileViewer />
-            </Route>
-            <Route exact path="/products">
-              <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo}/>
-            </Route>
-            <Route exact path="/order">
-              <OrderPreview chargeOrderInfo={this.chargeOrderInfo} />
-            </Route>
-            <Route exact path="/orders">
-              <OrderList />
-            </Route>
-            <Route exact path="/services">
-              <ProductCatalog productType="services" chargeOrderInfo={this.chargeOrderInfo}/>
-            </Route>
-            <Route exact path="/product/:operation/:id?">
-              <ProductForm title="PRODUCTO" />
-            </Route>
-            <Route exact path="/service/:operation/:id?">
-              <ProductForm title="SERVICIO" />
-            </Route>
-            <Route path="*" component={PageNotFound} />
-          </Switch>
-        </Router>
+        {this.renderMenu()}
+        <Switch>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/user/:operation/:id?">
+            <UserProfileViewer />
+          </Route>
+          <Route exact path="/products">
+            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} />
+          </Route>
+          <Route exact path="/order">
+            <OrderPreview chargeOrderInfo={this.chargeOrderInfo} />
+          </Route>
+          <Route exact path="/orders">
+            <OrderList />
+          </Route>
+          <Route exact path="/services">
+            <ProductCatalog productType="services" chargeOrderInfo={this.chargeOrderInfo} />
+          </Route>
+          <Route exact path="/product/:operation/:id?">
+            <ProductForm title="PRODUCTO" />
+          </Route>
+          <Route exact path="/service/:operation/:id?">
+            <ProductForm title="SERVICIO" />
+          </Route>
+          <Route path="*" component={PageNotFound} />
+        </Switch>
       </div>
     );
   }

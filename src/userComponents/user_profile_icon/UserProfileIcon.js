@@ -24,7 +24,7 @@ class UserProfileIcon extends React.Component {
     componentDidUpdate(prevProps) {
         if (this._isMounted) {
             this.loginService.getUserId().then(res => {
-                this.setState({ userId: res });
+                if(res > 0 && this.state.userId === 0) this.setState({ userId: res });
             });
         }
     }
