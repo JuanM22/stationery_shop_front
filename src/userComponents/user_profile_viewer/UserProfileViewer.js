@@ -72,13 +72,11 @@ class UserProfileViewer extends React.Component {
                 this.userService.saveUser(user).then(res => {
                     let message = res;
                     if (message[0] === "El usuario ha sido registrado correctamente") {
-                        this.loginService.saveLogin({ loginId: 0, username: user.email, password: user.password , userId: message[1]}).then(res => {
-                            if(res === "Login created successfully") this.setState({ message: message[0], hide: false, submited: true, userPicture: null });
-                            else alert(res);
+                        this.loginService.saveLogin({ loginId: 0, username: user.email, password: user.password, userId: message[1] }).then(res => {
+                            if (res === "Login created successfully") this.setState({ message: message[0], hide: false, submited: true, userPicture: null });
                         });
-                    } else {
-                        alert(message);
                     }
+                    if (message === "Datos actualizados correctamente") this.setState({ message: message, hide: false, submited: true, userPicture: null });
                 });
             }
         })

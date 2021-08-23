@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class ProductServices {
 
-    url = 'http://localhost:8090/product/';
+    url = config.host + 'product/';
 
     async saveProduct(product) {
         let response = '';
@@ -22,7 +23,7 @@ class ProductServices {
 
     async listProducts(productType) {
         let data = [];
-        await axios.get(this.url + 'list', { params: { productType: productType } , withCredentials: true} ).then(res => {
+        await axios.get(this.url + 'list', { params: { productType: productType }, withCredentials: true }).then(res => {
             data = res.data;
         });
         return data;

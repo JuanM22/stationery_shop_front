@@ -43,10 +43,10 @@ class OrderList extends React.Component {
                                         <div className="card-body bordered  bg-dark bg-gradient">
                                             <div className="row">
                                                 <div className="col">
-                                                    <label><strong>Fecha de expedición </strong>{order.dispatchDate}</label>
+                                                    <label><strong>Fecha de expedición </strong><br></br>{order.dispatchDate}</label>
                                                 </div>
                                                 <div className="col">
-                                                    <label><strong>Fecha de entrega </strong>{order.deliveryDate}</label>
+                                                    <label><strong>Fecha de entrega </strong><br></br>{order.deliveryDate}</label>
                                                 </div>
                                                 <div className="col">
                                                     <label><strong>Valor Total </strong><br></br>${order.totalPrice}</label>

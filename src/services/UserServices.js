@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class UserServices {
 
-    url = 'http://localhost:8090/user/';
+    url = config.host + 'user/';
 
     async saveUser(user) {
         let response = '';
@@ -22,7 +23,7 @@ class UserServices {
 
     async listUsers(userId) {
         let data = [];
-        await axios.get(this.url + 'list', { params: { userId: userId } , withCredentials: true}).then(res => {
+        await axios.get(this.url + 'list', { params: { userId: userId }, withCredentials: true }).then(res => {
             data = res.data;
         });
         return data;

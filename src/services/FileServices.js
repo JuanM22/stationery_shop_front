@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class FileServices {
 
-    url = 'http://localhost:8090/file/';
+    url = config.host + 'file/';
 
     async saveFiles(files) {
         let response = '';

@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class OrderServices {
 
-    url = 'http://localhost:8090/order/';
+    url = config.host + 'order/';
 
     async saveOrder(order) {
         let response = '';

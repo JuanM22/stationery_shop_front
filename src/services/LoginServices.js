@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class LoginServices {
 
-    url = 'http://localhost:8090/';
+    url = config.host;
 
     async saveLogin(login) {
         let response = '';

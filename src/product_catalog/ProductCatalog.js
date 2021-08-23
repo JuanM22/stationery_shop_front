@@ -1,12 +1,10 @@
 import React from 'react';
 import './ProductCatalog.css';
-import {
-    Link,
-} from "react-router-dom";
 import ProductServices from '../services/ProductServices';
 import FileServices from '../services/FileServices';
 import FilterComponent from '../filter_compo/FilterComponent';
 import ProductPreview from '../product_preview/ProductPreview';
+import ProductCard from './product_card/ProductCard';
 
 class ProductCatalog extends React.Component {
 
@@ -102,35 +100,22 @@ class ProductCatalog extends React.Component {
     render() {
         const products = this.state.products.map((item, index) => {
             var route = this.props.productType === "products" ? '/product' : '/service';
+            const data = {
+                item: item,
+                route: route,
+                src : (this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null
+            }
             return (
-                <div className="card mb-2 bg-dark border border-light bg-gradient" key={item.productId}>
-                    <div className="card-body">
-                        <div className="form-group row mt-2">
-                            <div className="col-3 bg-light mx-2 rounded" id="catalogProductPic">
-                                <img className="img-thumbnail rounded border-dark" src={(this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null} alt="Product pic" />
-                                <div className="bg-dark my-2 text-center">
-                                    <label className="text-white">Precio: ${item.unitPrice}</label>
-                                </div>
-                            </div>
-                            <div className="col px-0 mx-4 border border-light">
-                                <div className="card-title bg-primary bg-gradient text-white fw-bold py-3 text-center">{item.name}</div>
-                                <div className="my-5 text-center">
-                                    <Link className="btn btn-primary text-white w-25" to={route + "/view/" + item.productId}>Ver en detalle</Link>
-                                    <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(item)}>Añadir al carrito</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div >
+                <ProductCard data={data} key={item.productId} showProductPreview={this.showProductPreview}/>
             );
         });
         return (
-            <div className="container-fluid d-block position-absolute" id="catalogContainer">
+            <div className="container-fluid position-absolute" id="catalogContainer">
                 <div className="row">
-                    <div className="col-10">
+                    <div className="col-10 row mx-1">
                         {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
                     </div>
-                    <div className="col-2">
+                    <div className="col">
                         <FilterComponent />
                     </div>
                     {this.renderProductPreview()}

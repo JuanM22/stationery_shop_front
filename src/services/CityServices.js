@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { config } from '../serverConfig';
 
 class CityServices {
 
-    url = 'http://localhost:8090/city/';
+    url = config.host + 'city/';
 
     async listCities() {
         let data = [];
