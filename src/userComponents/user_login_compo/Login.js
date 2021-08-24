@@ -17,11 +17,12 @@ class Login extends React.Component {
         this.loginService = new LoginServices();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidMount() {
         var expired = this.props.history.location.state?.expired;
-        if (expired) {
+        if (expired === true) {
             this.props.history.location.state.expired = false;
             this.setState({ showModal: true, logged: false });
+            this.props.logOutHideMenu();
         }
     }
 

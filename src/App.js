@@ -15,7 +15,6 @@ import OrderList from './order_list_component/OrderList';
 import PageNotFound from './page_not_found_compo/PageNotFound';
 
 import LoginService from './services/LoginServices';
-import SessionExpiredModal from './custom_messages/session_expired_modal/SessionExpiredModal';
 
 class App extends React.Component {
 
@@ -39,12 +38,16 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this._isMounted) {
+    if (this._isMounted && this.state.hideMenu) {
       this.loginService.userIsLoggedIn().then(res => {
         const data = this.chargeOrderInfo();
         this.setState({ hideMenu: !res, products: data[0], services: data[1] });
       });
     }
+  }
+
+  logOutHideMenu = () => {
+    this.setState({ hideMenu: true });
   }
 
   chargeOrderInfo() {
@@ -65,7 +68,7 @@ class App extends React.Component {
         {this.renderMenu()}
         <Switch>
           <Route exact path="/login">
-            <Login />
+            <Login logOutHideMenu={this.logOutHideMenu}/>
           </Route>
           <Route exact path="/home">
             <Home />

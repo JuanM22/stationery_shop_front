@@ -17,7 +17,7 @@ class NavMenu extends React.Component {
                                 <Link className="nav-item nav-link text-white" to="/home">Inicio</Link>
                             </li>
                             <li className="nav-link nav-item dropdown">
-                                <a className="nav-link dropdown-toggle text-white" href=" " role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a className="nav-link dropdown-toggle text-white" href=" " role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Productos
                                 </a>
                                 <ul className="dropdown-menu">
@@ -26,7 +26,7 @@ class NavMenu extends React.Component {
                                 </ul>
                             </li>
                             <li className="nav-link nav-item dropdown">
-                                <a className="nav-link dropdown-toggle text-white" href=" " role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a className="nav-link dropdown-toggle text-white" href=" " role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Servicios
                                 </a>
                                 <div className="dropdown-menu">

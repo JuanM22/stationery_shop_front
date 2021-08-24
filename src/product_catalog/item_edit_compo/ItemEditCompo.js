@@ -11,8 +11,6 @@ const ItemEditCompo = (props) => {
     const editButton = <Link to={route}><i className="far fa-edit" title="Editar"></i></Link>
     const addToCartButton = <button className="addToCartBtn" onClick={() => props.showProductPreview(props.item)}><i className="fas fa-cart-plus" title="Añadir al carrito"></i></button>;
 
-    {/* <button className="btn btn-success text-white w-25 mx-3" onClick={() => this.showProductPreview(item)}>Añadir al carrito</button> */ }
-
     return (
         <div className="action_container">
             <div className="container icons">

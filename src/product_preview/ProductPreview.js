@@ -91,40 +91,42 @@ class ProductPreview extends React.Component {
         });
 
         return (
-            <div className="container border rounded px-0" id="productPreview">
-                <div className="bg-success bg-gradient text-white">
-                    <h3 className="py-2 mx-3">{this.item.name}</h3>
-                </div>
-                <div className="form-group row mt-2 py-2 rounded mx-0">
-                    {this.renderImageViewer()}
-                </div>
-                <div className="container">
-                    <h3 className="bg-success bg-gradient text-white py-2 mb-0">Descripción</h3>
-                    {/* <div className="top-0 bg-light"> */}
-                    <p className="py-5 lead border-dark bg-light">{this.item.description}</p>
-                    {/* </div> */}
-                </div>
-                <div className="container form-group row my-2">
-                    <div className="col-4">
-                        <div className="card">
-                            <div className="card-header bg-primary bg-gradient text-white fw-bold">Cantidad</div>
-                        </div>
-                        <div className="card-body bg-light">
-                            <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
-                        </div>
+            <div id="addToCartForm">
+                <div className="container border rounded px-0" id="productPreview">
+                    <div className="bg-success bg-gradient text-white">
+                        <h3 className="py-2 mx-3">{this.item.name}</h3>
                     </div>
-                    <div className="col">
-                        <div className="card">
-                            <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
-                            <div className="card-body" id="customFieldsContainer">
-                                {customFields}
+                    <div className="form-group row mt-2 py-2 rounded mx-0">
+                        {this.renderImageViewer()}
+                    </div>
+                    <div className="container">
+                        <h3 className="bg-success bg-gradient text-white py-2 mb-0">Descripción</h3>
+                        {/* <div className="top-0 bg-light"> */}
+                        <p className="py-5 lead border-dark bg-light">{this.item.description}</p>
+                        {/* </div> */}
+                    </div>
+                    <div className="container form-group row my-2">
+                        <div className="col-4">
+                            <div className="card">
+                                <div className="card-header bg-primary bg-gradient text-white fw-bold">Cantidad</div>
+                            </div>
+                            <div className="card-body bg-light">
+                                <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="card">
+                                <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
+                                <div className="card-body" id="customFieldsContainer">
+                                    {customFields}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="closePreviewBtn">
-                    <button className="btn btn-success w-25" onClick={this.sendOrderDetailData}>Agregar</button>
-                    <button className="btn btn-danger text-white w-25 mx-3" onClick={this.props.closePreview}>Cerrar</button>
+                    <div id="closePreviewBtn">
+                        <button className="btn btn-success w-25" onClick={this.sendOrderDetailData}>AGREGAR</button>
+                        <button className="btn btn-danger text-white w-25 mx-3" onClick={this.props.closePreview}>CANCELAR</button>
+                    </div>
                 </div>
             </div>
         );

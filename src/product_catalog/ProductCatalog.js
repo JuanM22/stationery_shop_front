@@ -80,9 +80,7 @@ class ProductCatalog extends React.Component {
     renderProductPreview() {
         if (!this.state.hide) {
             return (
-                <div id="addToCartForm">
-                    <ProductPreview item={this.state.item} setItem={this.setItem} closePreview={this.closePreview} />
-                </div>
+                <ProductPreview item={this.state.item} setItem={this.setItem} closePreview={this.closePreview} />
             )
         }
     }
@@ -98,15 +96,16 @@ class ProductCatalog extends React.Component {
     }
 
     render() {
+        // console.log('catalog rendered...');
         const products = this.state.products.map((item, index) => {
             var route = this.props.productType === "products" ? '/product' : '/service';
             const data = {
                 item: item,
                 route: route,
-                src : (this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null
+                src: (this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null
             }
             return (
-                <ProductCard data={data} key={item.productId} showProductPreview={this.showProductPreview}/>
+                <ProductCard data={data} key={item.productId} showProductPreview={this.showProductPreview} />
             );
         });
         return (

@@ -1,7 +1,10 @@
 .errorMessageContainer {
     text-align      : center;
     background-color: #5cb4b4;
+    width           : 100vw;
     height          : 100vh;
+    position        : absolute;
+    z-index         : 99999;
 }
 
 .icon {
