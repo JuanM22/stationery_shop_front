@@ -54,13 +54,13 @@ class ProductForm extends React.Component {
             type: (this.props.title === "PRODUCTO") ? 'products' : 'services',
             featureList: this.state.featureList
         };
-        console.log(product.featureList);
         this.fileService.saveFiles(this.state.productPics).then(res => {
             if (res === "files saved successfully") {
                 for (var pic of this.state.productPics) {
                     product.images.push(pic.file.name);
                 }
                 this.productService.saveProduct(product).then(res => {
+                    console.log(res);
                     this.setState({ message: res, hide: false, submited: true, productPics: [] });
                 });
             }

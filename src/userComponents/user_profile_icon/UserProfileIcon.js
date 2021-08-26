@@ -31,7 +31,7 @@ class UserProfileIcon extends React.Component {
     }
 
     redirectToLogin = () => {
-        if (this.state.loggedOut) return (<Redirect to='/login'></Redirect>)
+        if (this.state.loggedOut) return (<Redirect to={{ pathname: '/login', state: {sessionStatus: 'loggedOut'} }}></Redirect>)
     }
 
     render() {

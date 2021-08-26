@@ -14,9 +14,8 @@ class ProductCatalog extends React.Component {
             products: [],
             hide: true,
             item: null,
-            orderProducts: this.props.products,
-            orderServices: this.props.services,
-            productImages: []
+            productImages: [],
+            itemCounter: 0
         }
         this.productService = new ProductServices();
         this.fileService = new FileServices();
@@ -59,6 +58,7 @@ class ProductCatalog extends React.Component {
         const data = this.props.chargeOrderInfo();
         if (this.props.productType === "products") this.setProduct(orderDetail, data[0]);
         else this.setService(orderDetail, data[1]);
+        this.props.itemAdded();
     }
 
     setProduct = (orderDetail, productList) => {
@@ -96,7 +96,6 @@ class ProductCatalog extends React.Component {
     }
 
     render() {
-        // console.log('catalog rendered...');
         const products = this.state.products.map((item, index) => {
             var route = this.props.productType === "products" ? '/product' : '/service';
             const data = {

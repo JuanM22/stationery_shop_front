@@ -18,10 +18,14 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        var expired = this.props.history.location.state?.expired;
-        if (expired === true) {
-            this.props.history.location.state.expired = false;
+        var sessionStatus = this.props.history.location.state?.sessionStatus;
+        if (sessionStatus === 'expired') {
+            this.props.history.location.state.sessionStatus = false;
             this.setState({ showModal: true, logged: false });
+            this.props.logOutHideMenu();
+        }
+        if (sessionStatus === 'loggedOut') {
+            this.setState({ logged: false });
             this.props.logOutHideMenu();
         }
     }

@@ -10,7 +10,7 @@ import './index.css';
 import App from './App';
 
 export const history = createBrowserHistory();
-history.location.state = { expired: false };
+history.location.state = { sessionStatus: 'logged' };
 
 ReactDOM.render(
   <React.StrictMode>
@@ -25,7 +25,7 @@ ReactDOM.render(
 axios.interceptors.response.use((config) => {
   return config;
 }, (err) => {
-  if (err.response.status === 401) history.push('/login', { expired: true });
+  if (err.response.status === 401) history.push('/login', { sessionStatus: 'expired' });
   return Promise.reject(err);
 });
 

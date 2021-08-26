@@ -21,7 +21,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hideMenu: true
+      hideMenu: true,
+      itemCounter: 0
     };
     this._isMounted = false;
     this.loginService = new LoginService();
@@ -58,17 +59,26 @@ class App extends React.Component {
     return [products, services];
   }
 
+  itemAdded = () => {
+    let itemCounter = this.state.itemCounter;
+    this.setState({ itemCounter: itemCounter + 1 });
+  }
+  
+  sessionStorageCleared = () => {
+    this.setState({ itemCounter: 0 });
+  }
+
   renderMenu() {
     if (!this.state.hideMenu) return (<NavMenu ></NavMenu>);
   }
 
   render() {
     return (
-      <div>
+      <div className="appContainer">
         {this.renderMenu()}
         <Switch>
           <Route exact path="/login">
-            <Login logOutHideMenu={this.logOutHideMenu}/>
+            <Login logOutHideMenu={this.logOutHideMenu} />
           </Route>
           <Route exact path="/home">
             <Home />
@@ -77,10 +87,10 @@ class App extends React.Component {
             <UserProfileViewer />
           </Route>
           <Route exact path="/products">
-            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} />
+            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} itemAdded={this.itemAdded}/>
           </Route>
           <Route exact path="/order">
-            <OrderPreview chargeOrderInfo={this.chargeOrderInfo} />
+            <OrderPreview chargeOrderInfo={this.chargeOrderInfo} sessionStorageCleared={this.sessionStorageCleared}/>
           </Route>
           <Route exact path="/orders">
             <OrderList />

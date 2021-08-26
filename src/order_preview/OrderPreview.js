@@ -1,8 +1,17 @@
 import React from 'react';
+
+/* Services */
 import './OrderPreview.css';
 import dollar_sign from './dollar_sign.png';
 import FileServices from '../services/FileServices';
 import OrderServices from '../services/OrderServices';
+import LoginService from '../services/LoginServices';
+import UserService from '../services/UserServices';
+/* -------------------------------------------------- */
+
+/* Other components */
+import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
+/* -------------------------------------------------- */
 
 class OrderPreview extends React.Component {
 
@@ -19,17 +28,31 @@ class OrderPreview extends React.Component {
             productPics: [],
             servicePics: [],
             deliveryDate: "",
-            dispatchDate: ""
+            dispatchDate: "",
+            user: {
+                name: '',
+                email: '',
+                phone: '',
+                city: {
+                    name: ''
+                },
+                address: ''
+            },
+            hide: true,
+            message: ''
         }
         this.fileService = new FileServices();
         this.orderService = new OrderServices();
+        this.loginService = new LoginService();
+        this.userService = new UserService();
     }
 
     componentDidMount() {
-        this.calculateTotalPrice();
+        this.setUserInfo();
         this.chargeProductPics(this.state.productList, "products");
         this.chargeProductPics(this.state.serviceList, "services");
         this.setDates();
+        this.calculateTotalPrice();
     }
 
     chargeProductPics(itemList, type) {
@@ -81,14 +104,11 @@ class OrderPreview extends React.Component {
         this.setState({ paymentPanelClass: panelClass });
     }
 
-    saveOrder = () => {
+    saveOrder = (e) => {
+        e.preventDefault();
         const order = {
             orderId: this.state.orderId,
-            user: {
-                userId: 1,
-                name: "Juan",
-                document: 1049653379
-            },
+            user: this.state.user,
             state: true,
             dispatchDate: this.state.dispatchDate,
             deliveryDate: this.state.deliveryDate,
@@ -97,25 +117,34 @@ class OrderPreview extends React.Component {
             services: this.state.serviceList
         }
         this.orderService.saveOrder(order).then(res => {
-            console.log(res);
+            this.setState({ hide: false, message: res });
+            sessionStorage.clear();
+            this.props.sessionStorageCleared();
         });
     }
 
-    createInputField(feature, value) {
+    setNewInputValue(detail, e, feature) {
+        const newValue = e.target.value;
+        detail.features[feature.name] = newValue;
+    }
+
+    createInputField(data) {
+        const feature = data.feature;
         const inputClass = (feature.type === "file") ? "form-control-file" : "form-control form-control-sm"
         return (
             <div className="col" key={feature.name}>
                 <label htmlFor={feature.name} className="mx-2">{feature.name}</label>
-                <input type={feature.type} className={inputClass} id={feature.name} value={value}></input>
+                <input type={feature.type} className={inputClass} id={feature.name} value={data.value} onChange={(e) => this.setNewInputValue(data.detail, e, feature)}></input>
             </div>
         )
     }
 
-    createComboBoxField(feature, value) {
+    createComboBoxField(data) {
+        const feature = data.feature;
         return (
             <div className="col" key={feature.name}>
                 <label htmlFor={feature.name}>{feature.name}</label>
-                <select className="form-control form-control-sm" id={feature.name} value={value}>
+                <select className="form-control form-control-sm" id={feature.name} value={data.value} onChange={(e) => this.setNewInputValue(data.detail, e, feature)}>
                     {feature.values.map((item, index) => {
                         return (<option value={item} key={index}>{item}</option>)
                     })}
@@ -132,6 +161,16 @@ class OrderPreview extends React.Component {
         this.setState({ dispatchDate: dispatchDate, deliveryDate: deliveryDate });
     }
 
+    setUserInfo = () => {
+        this.loginService.getUserId().then(res => {
+            if (res > 0) {
+                this.userService.viewUser(res).then(res => {
+                    this.setState({ user: res });
+                });
+            }
+        })
+    }
+
     render() {
 
         const orderPricePanel =
@@ -143,14 +182,19 @@ class OrderPreview extends React.Component {
                     <div className="card-header bg-success text-white fw-bold">Valor total</div>
                     <div className="card-body">
                         $<label id="totalPrice">{this.state.orderTotalPrice}</label>
-                        <button className="btn btn-success mx-3" onClick={this.saveOrder}>Pagar ahora</button>
+                        <button className="btn btn-success mx-3" data-bs-toggle="modal" data-bs-target="#myModal" type="submit">Pagar ahora</button>
                     </div>
                 </div>
             </div>
 
         let orderProductsData = this.state.productList.map((detail, index) => {
             const customFields = detail.item.featureList.map((feature, index) => {
-                return (feature.type === 'select') ? this.createComboBoxField(feature, detail.features[index].value) : this.createInputField(feature);
+                const data = {
+                    feature: feature,
+                    currentValue: detail.features[feature.name],
+                    detail: detail
+                }
+                return (feature.type === 'select') ? this.createComboBoxField(data) : this.createInputField(data);
             });
 
             return (
@@ -177,22 +221,23 @@ class OrderPreview extends React.Component {
                                 <div className="col">
                                     <div className="card">
                                         <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
-                                        <div className="card-body" id="customFieldsContainer">
-                                            {customFields}
-                                        </div>
+                                        {(detail.item.featureList.length > 0) ?
+                                            <div className="card-body" id="customFieldsContainer">
+                                                {customFields}
+                                            </div>
+                                            : <div className="bg-warning py-2 text-center fw-bold">Este producto no cuenta con especificación adicionales</div>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                            <div className="form-group row mx-2 mt-2">
+                            {/* <div className="form-group row mx-2 mt-2">
 
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
             );
         });
-
-        
 
         let orderServicesData = this.state.serviceList.map((detail, index) => {
             return (
@@ -229,102 +274,107 @@ class OrderPreview extends React.Component {
         });
 
         return (
-            <div className="container-fluid" id="orderPreview">
-                <div className="card bg-dark bg-gradient">
-                    <div className="card-header bg-success bg-gradient text-white">
-                        <h1>Tu pedido</h1>
-                    </div>
-                    <div className="container-fluid my-2">
-                        <div className="d-flex align-items-start">
-                            <div className="nav flex-column nav-pills rounded" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                <button className="nav-link text-white border border-primary active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-basic-info" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información Básica</button>
-                                <button className="nav-link text-white border border-primary" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Productos</button>
-                                <button className="nav-link text-white border border-primary" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-services" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Servicios</button>
-                            </div>
-                            <div className="tab-content container-fluid" id="v-pills-tabContent">
-                                <div className="tab-pane fade show active" id="v-pills-basic-info" role="tabpanel" aria-labelledby="v-pills-basic-info-tab">
-                                    <div className="card">
-                                        <div className="card-header bg-dark text-white">
-                                            <h3>Información del cliente</h3>
-                                        </div>
-                                        <div className="card-body">
-                                            <div className="row">
-                                                <div className="col-4">
-                                                    <label>Nombre</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm"></input>
-                                                </div>
-                                                <div className="col-4">
-                                                    <label>Correo Electrónico</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm"></input>
-                                                </div>
-                                                <div className="col-4">
-                                                    <label>Teléfono</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm"></input>
-                                                </div>
-                                            </div>
-                                            <div className="row my-2">
-                                                <div className="col-4">
-                                                    <label>Dirección</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm"></input>
-                                                </div>
-                                                <div className="col-4">
-                                                    <label>Ciudad</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm"></input>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="card my-2">
-                                        <div className="card-header bg-dark text-white">
-                                            <h3>Información Básica del Pedido</h3>
-                                        </div>
-                                        <div className="card-body">
-                                            <div className="row">
-                                                <div className="col-4">
-                                                    <label>Fecha de Expedición</label>
-                                                    <input type="date" readOnly className="form-control form-control-sm" id="dispatchDate" value={this.state.dispatchDate}></input>
-                                                </div>
-                                                <div className="col-4">
-                                                    <label>Fecha Aproximada de Entrega</label>
-                                                    <input type="date" readOnly className="form-control form-control-sm" id="deliveryDate" value={this.state.deliveryDate}></input>
-                                                </div>
-                                                <div className="col-4">
-                                                    <label>Valor a Pagar</label>
-                                                    <input type="text" readOnly className="form-control form-control-sm" value={`$${this.state.orderTotalPrice}`}></input>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div className="container-fluid h-100" id="orderPreview">
+                <div className="text-center" hidden={this.state.hide}>
+                    <SuccessMessage message={this.state.message} />
+                </div>
+                <form onSubmit={this.saveOrder}>
+                    <div className="card bg-dark bg-gradient">
+                        <div className="card-header bg-success bg-gradient text-white">
+                            <h1>Tu pedido</h1>
+                        </div>
+                        <div className="container-fluid my-2 py-4">
+                            <div className="d-flex align-items-start">
+                                <div className="nav flex-column nav-pills rounded" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    <button className="nav-link text-white border border-primary active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-basic-info" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información Básica</button>
+                                    <button className="nav-link text-white border border-primary" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Productos</button>
+                                    <button className="nav-link text-white border border-primary" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-services" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Servicios</button>
                                 </div>
-
-                                <div className="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab">
-                                    <div className="card">
-                                        <div className="card-header bg-dark text-white">
-                                            <h3>Productos seleccionados</h3>
+                                <div className="tab-content container-fluid" id="v-pills-tabContent">
+                                    <div className="tab-pane fade show active" id="v-pills-basic-info" role="tabpanel" aria-labelledby="v-pills-basic-info-tab">
+                                        <div className="card">
+                                            <div className="card-header bg-dark text-white">
+                                                <h3>Información del cliente</h3>
+                                            </div>
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-4">
+                                                        <label>Nombre</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.name}></input>
+                                                    </div>
+                                                    <div className="col-4">
+                                                        <label>Correo Electrónico</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.email}></input>
+                                                    </div>
+                                                    <div className="col-4">
+                                                        <label>Teléfono</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.phone}></input>
+                                                    </div>
+                                                </div>
+                                                <div className="row my-2">
+                                                    <div className="col-4">
+                                                        <label>Dirección</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.address}></input>
+                                                    </div>
+                                                    <div className="col-4">
+                                                        <label>Ciudad</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.city?.name}></input>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="card-body">
-                                            {orderProductsData}
+                                        <div className="card my-2 mt-4">
+                                            <div className="card-header bg-dark text-white">
+                                                <h3>Información Básica del Pedido</h3>
+                                            </div>
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-4">
+                                                        <label>Fecha de Expedición</label>
+                                                        <input type="date" readOnly className="form-control form-control-sm" id="dispatchDate" value={this.state.dispatchDate}></input>
+                                                    </div>
+                                                    <div className="col-4">
+                                                        <label>Fecha Aproximada de Entrega</label>
+                                                        <input type="date" readOnly className="form-control form-control-sm" id="deliveryDate" value={this.state.deliveryDate}></input>
+                                                    </div>
+                                                    <div className="col-4">
+                                                        <label>Valor a Pagar</label>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={`$${this.state.orderTotalPrice}`}></input>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="tab-pane fade" id="v-pills-services" role="tabpanel" aria-labelledby="v-pills-services-tab">
-                                    <div className="card">
-                                        <div className="card-header bg-dark text-white">
-                                            <h3>Servicios seleccionados</h3>
+                                    <div className="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab">
+                                        <div className="card">
+                                            <div className="card-header bg-dark text-white">
+                                                <h3>Productos seleccionados</h3>
+                                            </div>
+                                            <div className="card-body">
+                                                {orderProductsData}
+                                            </div>
                                         </div>
-                                        <div className="card-body">
-                                            {orderServicesData}
+                                    </div>
+
+                                    <div className="tab-pane fade" id="v-pills-services" role="tabpanel" aria-labelledby="v-pills-services-tab">
+                                        <div className="card">
+                                            <div className="card-header bg-dark text-white">
+                                                <h3>Servicios seleccionados</h3>
+                                            </div>
+                                            <div className="card-body">
+                                                {orderServicesData}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel">
-                    {orderPricePanel}
-                </div>
+                    <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel">
+                        {orderPricePanel}
+                    </div>
+                </form>
             </div >
         );
     }

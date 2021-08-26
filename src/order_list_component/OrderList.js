@@ -5,6 +5,7 @@ import './OrderList.css';
 
 import FilterComponent from '../filter_compo/FilterComponent';
 import OrderServices from '../services/OrderServices';
+import LoginServices from '../services/LoginServices';
 
 class OrderList extends React.Component {
 
@@ -13,6 +14,7 @@ class OrderList extends React.Component {
         this.state = {
             orders: []
         }
+        this.loginService = new LoginServices();
         this.orderService = new OrderServices();
     }
 
@@ -21,7 +23,9 @@ class OrderList extends React.Component {
     }
 
     listOrders = () => {
-        this.orderService.listOrders(1).then(res => this.setState({ orders: res }));
+        this.loginService.getUserId().then(res => {
+            if (res > 0) this.orderService.listOrders(res).then(res => this.setState({ orders: res }));
+        })
     }
 
     render() {

@@ -13,7 +13,7 @@ const SuccessMessage = (props) => {
                         <h4 className="modal-title w-100">{props.message}</h4>
                     </div>
                     <div className="modal-footer">
-                        <button className="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                        <button className="btn btn-success btn-block" data-bs-dismiss="modal">OK</button>
                     </div>
                 </div>
             </div>

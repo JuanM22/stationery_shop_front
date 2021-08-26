@@ -19,7 +19,7 @@ class ProductPreview extends React.Component {
         const orderDetail = {
             item: this.item,
             quantity: parseInt(document.getElementById('quantity').value),
-            features: []
+            features: {}
         }
         this.extractCustomInputValues(orderDetail.features);
         this.extractCustomComboBoxValues(orderDetail.features);
@@ -49,15 +49,15 @@ class ProductPreview extends React.Component {
         const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('input');
         for (let i = 0; i < inputs.length; i++) {
             var item = inputs[i];
-            features.push({ name: item.id, value: item.value });
+            features[item.id] = item.value;
         }
     }
-
+    
     extractCustomComboBoxValues(features) {
         const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('select');
         for (let i = 0; i < inputs.length; i++) {
             var item = inputs[i];
-            features.push({ name: item.id, value: item.value });
+            features[item.id] = item.value;
         }
     }
 
