@@ -63,7 +63,7 @@ class App extends React.Component {
     let itemCounter = this.state.itemCounter;
     this.setState({ itemCounter: itemCounter + 1 });
   }
-  
+
   sessionStorageCleared = () => {
     this.setState({ itemCounter: 0 });
   }
@@ -87,10 +87,10 @@ class App extends React.Component {
             <UserProfileViewer />
           </Route>
           <Route exact path="/products">
-            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} itemAdded={this.itemAdded}/>
+            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} itemAdded={this.itemAdded} />
           </Route>
-          <Route exact path="/order">
-            <OrderPreview chargeOrderInfo={this.chargeOrderInfo} sessionStorageCleared={this.sessionStorageCleared}/>
+          <Route exact path="/order/:operation/:id?">
+            <OrderPreview chargeOrderInfo={this.chargeOrderInfo} sessionStorageCleared={this.sessionStorageCleared} />
           </Route>
           <Route exact path="/orders">
             <OrderList />

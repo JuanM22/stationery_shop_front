@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { withRouter } from 'react-router-dom';
 /* Services */
 import './OrderPreview.css';
 import dollar_sign from './dollar_sign.png';
@@ -13,13 +13,17 @@ import UserService from '../services/UserServices';
 import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
 /* -------------------------------------------------- */
 
+/* Model Classes */
+import Order from './Order';
+
+
 class OrderPreview extends React.Component {
 
     constructor(props) {
         super(props);
         const data = this.props.chargeOrderInfo();
         this.state = {
-            orderId: 0,
+            order: new Order(),
             productList: data[0],
             serviceList: data[1],
             dollarSignClass: "dollarMouseOut",
@@ -29,15 +33,6 @@ class OrderPreview extends React.Component {
             servicePics: [],
             deliveryDate: "",
             dispatchDate: "",
-            user: {
-                name: '',
-                email: '',
-                phone: '',
-                city: {
-                    name: ''
-                },
-                address: ''
-            },
             hide: true,
             message: ''
         }
@@ -48,11 +43,16 @@ class OrderPreview extends React.Component {
     }
 
     componentDidMount() {
-        this.setUserInfo();
+        const operation = this.props.match.params.operation;
+        if (operation === 'view') {
+            this.viewOrder();
+        } else {
+            this.setUserInfo();
+            this.setDates();
+            this.calculateTotalPrice();
+        }
         this.chargeProductPics(this.state.productList, "products");
         this.chargeProductPics(this.state.serviceList, "services");
-        this.setDates();
-        this.calculateTotalPrice();
     }
 
     chargeProductPics(itemList, type) {
@@ -107,20 +107,32 @@ class OrderPreview extends React.Component {
     saveOrder = (e) => {
         e.preventDefault();
         const order = {
-            orderId: this.state.orderId,
-            user: this.state.user,
+            // orderId: this.state.order.orderId,
+            orderId: 0,
+            user: this.state.order.user,
             state: true,
             dispatchDate: this.state.dispatchDate,
             deliveryDate: this.state.deliveryDate,
             totalPrice: parseFloat(document.getElementById('totalPrice').innerHTML),
             products: this.state.productList,
             services: this.state.serviceList
-        }
+        };
         this.orderService.saveOrder(order).then(res => {
-            this.setState({ hide: false, message: res });
+            this.setState({ hide: false, message: res, productList: [], serviceList: [] });
             sessionStorage.clear();
             this.props.sessionStorageCleared();
         });
+    }
+
+    viewOrder() {
+        const orderId = this.props.match.params.id;
+        this.orderService.viewOrder(orderId).then(res => {
+            this.setState({ order: res, productList: res.products, serviceList: res.services },
+                () => {
+                    this.chargeProductPics(this.state.productList, "products");
+                    this.chargeProductPics(this.state.serviceList, "services");
+                });
+        })
     }
 
     setNewInputValue(detail, e, feature) {
@@ -165,7 +177,9 @@ class OrderPreview extends React.Component {
         this.loginService.getUserId().then(res => {
             if (res > 0) {
                 this.userService.viewUser(res).then(res => {
-                    this.setState({ user: res });
+                    const order = this.state.order;
+                    order.user = res;
+                    this.setState({ order: order });
                 });
             }
         })
@@ -198,7 +212,7 @@ class OrderPreview extends React.Component {
             });
 
             return (
-                <div className="card" key={detail.item.productId}>
+                <div className="card mb-2" key={detail.item.productId}>
                     <h4 className="card-header bg-primary text-white">{detail.item.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
@@ -212,8 +226,13 @@ class OrderPreview extends React.Component {
                                         <input id={`${"quantity" + detail.item.productId}`} type="number" value={detail.quantity} min="1"
                                             className="form-control form-control-sm" onChange={(e) => this.changeDetailQuantity(detail, e)} />
                                     </div>
-                                    <div>
-                                        <label htmlFor={`${"price" + detail.item.productId}`}>Valor</label>
+                                    <div className="mb-2">
+                                        <label htmlFor={`${"unitPrice" + detail.item.productId}`}>Valor Unitario</label>
+                                        <input id={`${"unitPrice" + detail.item.productId}`} value={detail.item.unitPrice}
+                                            className="form-control form-control-sm" readOnly />
+                                    </div>
+                                    <div className="mb-2">
+                                        <label htmlFor={`${"price" + detail.item.productId}`}>Valor Total</label>
                                         <input id={`${"price" + detail.item.productId}`} value={detail.quantity * detail.item.unitPrice}
                                             className="form-control form-control-sm" readOnly />
                                     </div>
@@ -225,7 +244,7 @@ class OrderPreview extends React.Component {
                                             <div className="card-body" id="customFieldsContainer">
                                                 {customFields}
                                             </div>
-                                            : <div className="bg-warning py-2 text-center fw-bold">Este producto no cuenta con especificación adicionales</div>
+                                            : <div className="bg-warning py-2 text-center fw-bold">Este producto no cuenta con especificaciones adicionales</div>
                                         }
                                     </div>
                                 </div>
@@ -300,25 +319,25 @@ class OrderPreview extends React.Component {
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <label>Nombre</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.name}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.name}></input>
                                                     </div>
                                                     <div className="col-4">
                                                         <label>Correo Electrónico</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.email}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.email}></input>
                                                     </div>
                                                     <div className="col-4">
                                                         <label>Teléfono</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.phone}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.phone}></input>
                                                     </div>
                                                 </div>
                                                 <div className="row my-2">
                                                     <div className="col-4">
                                                         <label>Dirección</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.address}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.address}></input>
                                                     </div>
                                                     <div className="col-4">
                                                         <label>Ciudad</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.user.city?.name}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.city?.name}></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -381,4 +400,4 @@ class OrderPreview extends React.Component {
 
 }
 
-export default OrderPreview;
+export default withRouter(OrderPreview);

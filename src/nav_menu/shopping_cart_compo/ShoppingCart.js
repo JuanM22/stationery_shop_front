@@ -28,7 +28,7 @@ class ShoppingCart extends React.Component {
                         </span>
                     </label>
                     <hr className="dropdown-divider" />
-                    <Link className="dropdown-item" to="/order">Ver el carrito</Link>
+                    <Link className="dropdown-item" to="/order/create">Ver el carrito</Link>
                 </div>
             </div>
         );
