@@ -16,6 +16,7 @@ class ProductForm extends React.Component {
         super(props);
         this.state = {
             activeForm: false,
+            specificationFormClass: 'form-disabled',
             hide: true,
             message: '',
             productId: 0,
@@ -60,7 +61,6 @@ class ProductForm extends React.Component {
                     product.images.push(pic.file.name);
                 }
                 this.productService.saveProduct(product).then(res => {
-                    console.log(res);
                     this.setState({ message: res, hide: false, submited: true, productPics: [] });
                 });
             }
@@ -160,7 +160,13 @@ class ProductForm extends React.Component {
         e.preventDefault();
         const featureList = this.state.featureList;
         featureList.splice(index, 1);
-        this.setState({featureList: featureList});
+        this.setState({ featureList: featureList });
+    }
+
+    showSpecificationPanel = () => {
+        let specificationFormClass = this.state.specificationFormClass;
+        specificationFormClass = (specificationFormClass === 'form-disabled') ? 'form-enabled' : 'form-disabled';
+        this.setState({ specificationFormClass : specificationFormClass });
     }
 
     render() {
@@ -201,10 +207,10 @@ class ProductForm extends React.Component {
                                             <div className="card-header">
                                                 <div className="form-check form-switch">
                                                     <label className="form-check-label" htmlFor="uniqueSpecs">Editar especificaciones adicionales</label>
-                                                    <input className="form-check-input" type="checkbox" id="uniqueSpecs"></input>
+                                                    <input className="form-check-input" type="checkbox" id="uniqueSpecs" disabled={this.state.activeForm} onClick={this.showSpecificationPanel}></input>
                                                 </div>
                                             </div>
-                                            <div className="card-body border-light">
+                                            <div className={`card-body border-light ` + this.state.specificationFormClass} hidden={this.state.specificationFormClass !== 'form-enabled'}>
                                                 <div className="row">
                                                     <button type="button" className="btn btn-success col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)}>Agregar especificación</button>
                                                 </div>

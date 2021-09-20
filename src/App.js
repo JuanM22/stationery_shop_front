@@ -15,6 +15,8 @@ import OrderList from './order_list_component/OrderList';
 import PageNotFound from './page_not_found_compo/PageNotFound';
 
 import LoginService from './services/LoginServices';
+import UserServices from './services/UserServices';
+import HelpPage from './help_page_component/HelpPage';
 
 class App extends React.Component {
 
@@ -22,10 +24,13 @@ class App extends React.Component {
     super(props);
     this.state = {
       hideMenu: true,
-      itemCounter: 0
+      itemCounter: 0,
+      userType: null,
+      userIsLoggedIn: false
     };
     this._isMounted = false;
     this.loginService = new LoginService();
+    this.userService = new UserServices();
   }
 
   componentDidMount() {
@@ -39,12 +44,30 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this._isMounted && this.state.hideMenu) {
-      this.loginService.userIsLoggedIn().then(res => {
-        const data = this.chargeOrderInfo();
-        this.setState({ hideMenu: !res, products: data[0], services: data[1] });
-      });
+    if ((this._isMounted && this.state.hideMenu)) {
+      if (!this.state.userIsLoggedIn) {
+        this.loginService.userIsLoggedIn().then(res => {
+          const data = this.chargeOrderInfo();
+          this.setState({ hideMenu: !res, products: data[0], services: data[1] }, () => {
+            if (!this.state.hideMenu) this.checkUserType();
+          });
+        });
+      }
     }
+  }
+
+  checkUserType() {
+    this.loginService.getUserId().then(id => {
+      if (id > 0) {
+        this.userService.viewUser(id).then(user => {
+          this.setState({ userType: user.type });
+        });
+      }
+    });
+  }
+
+  setLoggedUser = () => {
+    this.setState({ userIsLoggedIn: true });
   }
 
   logOutHideMenu = () => {
@@ -69,7 +92,7 @@ class App extends React.Component {
   }
 
   renderMenu() {
-    if (!this.state.hideMenu) return (<NavMenu ></NavMenu>);
+    if (!this.state.hideMenu) return (<NavMenu userType={this.state.userType} ></NavMenu>);
   }
 
   render() {
@@ -78,7 +101,7 @@ class App extends React.Component {
         {this.renderMenu()}
         <Switch>
           <Route exact path="/login">
-            <Login logOutHideMenu={this.logOutHideMenu} />
+            <Login logOutHideMenu={this.logOutHideMenu} setLoggedUser={this.setLoggedUser} />
           </Route>
           <Route exact path="/home">
             <Home />
@@ -87,16 +110,16 @@ class App extends React.Component {
             <UserProfileViewer />
           </Route>
           <Route exact path="/products">
-            <ProductCatalog productType="products" chargeOrderInfo={this.chargeOrderInfo} itemAdded={this.itemAdded} />
+            <ProductCatalog userType={this.state.userType} productType="products" chargeOrderInfo={this.chargeOrderInfo} itemAdded={this.itemAdded} />
           </Route>
           <Route exact path="/order/:operation/:id?">
             <OrderPreview chargeOrderInfo={this.chargeOrderInfo} sessionStorageCleared={this.sessionStorageCleared} />
           </Route>
           <Route exact path="/orders">
-            <OrderList />
+            <OrderList userType={this.state.userType} />
           </Route>
           <Route exact path="/services">
-            <ProductCatalog productType="services" chargeOrderInfo={this.chargeOrderInfo} />
+            <ProductCatalog userType={this.state.userType} productType="services" chargeOrderInfo={this.chargeOrderInfo} />
           </Route>
           <Route exact path="/product/:operation/:id?">
             <ProductForm title="PRODUCTO" />
@@ -104,12 +127,14 @@ class App extends React.Component {
           <Route exact path="/service/:operation/:id?">
             <ProductForm title="SERVICIO" />
           </Route>
+          <Route exact path="/help">
+            <HelpPage></HelpPage>
+          </Route>
           <Route path="*" component={PageNotFound} />
         </Switch>
       </div>
     );
   }
-
 }
 
 export default App;

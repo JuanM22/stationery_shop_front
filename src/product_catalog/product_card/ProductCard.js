@@ -35,7 +35,7 @@ class ProductCard extends React.Component {
                         <div className="card-text price">Precio: ${item.unitPrice}</div>
                     </div>
                 </div >
-                {(this.state.showActions) ? <ItemEditCompo item={item} route={route} showProductPreview={this.props.showProductPreview} /> : null}
+                {(this.state.showActions) ? <ItemEditCompo item={item} route={route} showProductPreview={this.props.showProductPreview} userType={this.props.userType}/> : null}
             </div>
         )
     }

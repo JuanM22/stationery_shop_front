@@ -104,7 +104,7 @@ class ProductCatalog extends React.Component {
                 src: (this.state.productImages[index] !== undefined) ? this.state.productImages[index].src : null
             }
             return (
-                <ProductCard data={data} key={item.productId} showProductPreview={this.showProductPreview} />
+                <ProductCard userType={this.props.userType} data={data} key={item.productId} showProductPreview={this.showProductPreview} />
             );
         });
         return (

@@ -24,8 +24,11 @@ class OrderList extends React.Component {
 
     listOrders = () => {
         this.loginService.getUserId().then(res => {
-            if (res > 0) this.orderService.listOrders(res).then(res => this.setState({ orders: res }));
-        })
+            let userId;
+            if(this.props.userType === 'administrator') userId = 0;
+            else userId = res;
+            this.orderService.listOrders(userId).then(res => this.setState({ orders: res }));
+        });
     }
 
     render() {

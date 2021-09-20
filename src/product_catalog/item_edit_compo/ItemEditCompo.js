@@ -15,10 +15,10 @@ const ItemEditCompo = (props) => {
         <div className="action_container">
             <div className="container icons">
                 <div className="row">
-                    <div className="col">
+                    <div className="col" hidden={props.userType === 'customer'}>
                         {editButton}
                     </div>
-                    <div className="col">
+                    <div className="col" hidden={props.userType === 'administrator'}>
                         {addToCartButton}
                     </div>
                 </div>

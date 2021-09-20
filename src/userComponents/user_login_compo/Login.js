@@ -42,6 +42,7 @@ class Login extends React.Component {
         }
         this.loginService.checkLogin(login).then(res => {
             if (res === "Login successfully") {
+                this.props.setLoggedUser();
                 this.setState({ logged: true });
             } else {
                 alert("Credenciales incorrectas!!!");
