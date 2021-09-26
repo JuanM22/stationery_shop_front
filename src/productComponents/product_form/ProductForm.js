@@ -1,12 +1,12 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import './ProductForm.css';
-import ProductServices from '../services/ProductServices';
-import FileServices from '../services/FileServices';
-import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
-import Buttons from '../form_buttons/buttons/Buttons';
-import SwitchButton from '../form_buttons/switch/SwitchButton';
-import ImageViewer from '../image_viewer/ImageViewer';
+import ProductServices from '../../services/ProductServices';
+import FileServices from '../../services/FileServices';
+import SuccessMessage from '../../custom_messages/success_message_compo/SuccessMessage';
+import Buttons from '../../form_buttons/buttons/Buttons';
+import SwitchButton from '../../form_buttons/switch/SwitchButton';
+import ImageViewer from '../../image_viewer/ImageViewer';
 import TableComponent from './table_compo/TableComponent';
 import FeaturePreview from './table_compo/feature_preview_compo/FeaturePreview';
 
@@ -16,7 +16,7 @@ class ProductForm extends React.Component {
         super(props);
         this.state = {
             activeForm: false,
-            specificationFormClass: 'form-disabled',
+            activeSpecificationForm: false,
             hide: true,
             message: '',
             productId: 0,
@@ -33,7 +33,7 @@ class ProductForm extends React.Component {
         const operation = this.props.match.params.operation;
         if (operation === 'view') {
             this.viewProduct();
-            this.setState({ activeForm: true });
+            this.setState({ activeForm: true, activeSpecificationForm: true });
         } else {
             this.cleanFields();
         }
@@ -163,10 +163,8 @@ class ProductForm extends React.Component {
         this.setState({ featureList: featureList });
     }
 
-    showSpecificationPanel = () => {
-        let specificationFormClass = this.state.specificationFormClass;
-        specificationFormClass = (specificationFormClass === 'form-disabled') ? 'form-enabled' : 'form-disabled';
-        this.setState({ specificationFormClass : specificationFormClass });
+    activeSpecificationPanel = () => {
+        this.setState({ activeSpecificationForm: !this.state.activeSpecificationForm });
     }
 
     render() {
@@ -176,11 +174,11 @@ class ProductForm extends React.Component {
                     <SuccessMessage message={this.state.message} />
                 </div>
                 <div className="card">
-                    <form className="text-white fw-bold" onSubmit={this.saveProduct}>
-                        <div className="card-header bg-success bg-gradient text-white fw-bold">
+                    <form className="fw-bold" onSubmit={this.saveProduct}>
+                        <div className="card-header bg-gradient fw-bold top-bar-bg text-white">
                             <h3 className="card-title">{this.props.title}</h3>
                         </div>
-                        <div className="card-body bg-dark bg-gradient">
+                        <div className="card-body form-bg form-text-bg">
                             {this.renderSwitchButton()}
                             <div className="form-group mx-3">
                                 <div className="row">
@@ -203,20 +201,20 @@ class ProductForm extends React.Component {
                                         <textarea className="form-control" id="description" rows="6" readOnly={this.state.activeForm}></textarea>
                                     </div>
                                     <div className="col">
-                                        <div className="card bg-dark bg-gradient">
-                                            <div className="card-header">
+                                        <div className="card">
+                                            <div className="card-header top-bar-bg">
                                                 <div className="form-check form-switch">
-                                                    <label className="form-check-label" htmlFor="uniqueSpecs">Editar especificaciones adicionales</label>
-                                                    <input className="form-check-input" type="checkbox" id="uniqueSpecs" disabled={this.state.activeForm} onClick={this.showSpecificationPanel}></input>
+                                                    <label className="form-check-label text-white" htmlFor="uniqueSpecs">Editar especificaciones adicionales</label>
+                                                    <input className="form-check-input" type="checkbox" id="uniqueSpecs" disabled={this.state.activeForm} onClick={this.activeSpecificationPanel}></input>
                                                 </div>
                                             </div>
-                                            <div className={`card-body border-light ` + this.state.specificationFormClass} hidden={this.state.specificationFormClass !== 'form-enabled'}>
+                                            <div className="card-body border-light">
                                                 <div className="row">
-                                                    <button type="button" className="btn btn-success col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)}>Agregar especificación</button>
+                                                    <button type="button" className="btn btn-success col-4 mx-3 mb-1" onClick={(e) => this.createNewRow(e)} disabled={this.state.activeSpecificationForm}>Agregar especificación</button>
                                                 </div>
                                                 <div id="featuresTable">
-                                                    <table className="table table-success table-striped table-bordered border-dark">
-                                                        <thead>
+                                                    <table className="table table-bordered border-dark">
+                                                        <thead className="top-bar-bg text-white">
                                                             <tr>
                                                                 <th scope="col">Nombre</th>
                                                                 <th scope="col">Valor permitido</th>
@@ -224,7 +222,7 @@ class ProductForm extends React.Component {
                                                                 <th scope="col"></th>
                                                             </tr>
                                                         </thead>
-                                                        <TableComponent featureList={this.state.featureList} removeFeature={this.removeFeature} />
+                                                        <TableComponent featureList={this.state.featureList} removeFeature={this.removeFeature} activeSpecificationForm={this.state.activeSpecificationForm} />
                                                     </table>
                                                 </div>
                                             </div>
@@ -234,7 +232,7 @@ class ProductForm extends React.Component {
                             </div>
                             <div className="form-group mt-3 mx-3">
                                 <label>Imagenes</label>
-                                <div className="form-group row mt-2 bg-dark bg-gradient border border-light py-2 rounded mx-0">
+                                <div className="form-group row mt-2 top-bar-bg border border-light py-2 rounded mx-0">
                                     {this.renderImageViewer()}
                                 </div>
                             </div>

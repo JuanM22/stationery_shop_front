@@ -1,9 +1,9 @@
 import React from 'react';
 import './ProductCatalog.css';
-import ProductServices from '../services/ProductServices';
-import FileServices from '../services/FileServices';
-import FilterComponent from '../filter_compo/FilterComponent';
-import ProductPreview from '../product_preview/ProductPreview';
+import ProductServices from '../../services/ProductServices';
+import FileServices from '../../services/FileServices';
+import FilterComponent from '../../filter_compo/FilterComponent';
+import ProductPreview from '../product_form/ProductForm';
 import ProductCard from './product_card/ProductCard';
 
 class ProductCatalog extends React.Component {
@@ -110,7 +110,7 @@ class ProductCatalog extends React.Component {
         return (
             <div className="container-fluid position-absolute" id="catalogContainer">
                 <div className="row">
-                    <div className="col-10 row mx-1">
+                    <div className="col-10 row mx-2 form-bg p-4 rounded">
                         {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
                     </div>
                     <div className="col">

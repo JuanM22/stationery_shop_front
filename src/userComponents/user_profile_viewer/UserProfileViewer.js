@@ -148,15 +148,15 @@ class UserProfileViewer extends React.Component {
                 </div>
                 <div className="card" id="userForm">
                     <form className="text-white fw-bold" onSubmit={this.saveUser}>
-                        <div className="card-header bg-dark text-white text-center fw-bold">
+                        <div className="card-header top-bar-bg text-white text-center fw-bold">
                             <h3 className="card-title">USUARIO</h3>
                         </div>
-                        <div className="card-body bg-secondary">
+                        <div className="card-body form-bg">
                             {this.renderSwitchButton()}
                             <div className="form-group mx-3">
                                 <div className="row">
                                     <div className="col-4" id="userProfilePicContainer">
-                                        <img id="userProfilePic" className="img-fluid bg-light border border-info border-3 rounded float-start" src={userIcon} alt="userPic" />
+                                        <img id="userProfilePic" className="img-fluid bg-light border border-dark border-1 rounded" src={userIcon} alt="userPic" />
                                     </div>
                                     <div className="col">
                                         <div className="row">

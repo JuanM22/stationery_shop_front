@@ -1,0 +1,9 @@
+.product_card {
+    height: 100%;
+}
+
+.price {
+    background-color: lightblue;
+    border-radius: 20%;
+    text-align: center;
+}

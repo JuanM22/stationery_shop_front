@@ -13,7 +13,7 @@ class NavMenu extends React.Component {
 
     render() {
         return (
-            <nav className="navbar navbar-expand-lg navbar-dark bg-success bg-gradient fw-bold fixed-top" id="navBar">
+            <nav className="navbar navbar-expand-lg  top-bar-bg bg-gradient fw-bold fixed-top" id="navBar">
                 <div className="container-fluid">
                     <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">

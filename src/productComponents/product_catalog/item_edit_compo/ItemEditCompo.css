@@ -1,10 +1,11 @@
 .action_container {
     background-color: rgba(24, 29, 31, 0.753);
+    border-radius: 1.5%;
     position        : absolute;
-    top             : 19%;
-    margin-left            : 0.3%;
-    width           : 19.8%;
-    height          : 81%;
+    top             : 22%;
+    margin-left     : 0.3%;
+    width           : 19.4%;
+    height          : 73%;
     text-align      : center;
 }
 
@@ -19,5 +20,5 @@
 
 .addToCartBtn {
     background-color: transparent;
-    border: none;
+    border          : none;
 }

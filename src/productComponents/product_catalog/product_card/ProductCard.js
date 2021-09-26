@@ -28,7 +28,7 @@ class ProductCard extends React.Component {
 
         return (
             <div className="col-3 item_card p-0 product_card" onMouseLeave={this.closeActionModal}>
-                <div className="card border border-dark px-2 mx-1">
+                <div className="card border px-2 mx-1">
                     <img onMouseEnter={this.showActionModal} className="img-thumbnail rounded m-2" src={src} alt="Product pic" />
                     <div className="card-body">
                         <h4 className="card-title">{item.name}</h4>

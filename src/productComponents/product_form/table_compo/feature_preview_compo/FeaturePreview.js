@@ -44,7 +44,7 @@ class FeaturePreview extends React.Component {
             <div id="featurePreviewContainer">
                 <div className="container mt-5">
                     <div className="card">
-                        <div className="card-header bg-primary bg-gradient text-white fw-bold">Nueva Especificación</div>
+                        <div className="card-header top-bar-bg bg-gradient text-white fw-bold">Nueva Especificación</div>
                         <div className="card-body">
                             <div className="row">
                                 <div className="col">
@@ -72,14 +72,14 @@ class FeaturePreview extends React.Component {
                                 </div>
                                 <div className="col">
                                     <div className="card mt-4">
-                                        <div className="card-header bg-primary bg-gradient text-white fw-bold">Agregar nuevo valor a la lista</div>
+                                        <div className="card-header top-bar-bg bg-gradient text-white fw-bold">Agregar nuevo valor a la lista</div>
                                         <div className="card-body">
                                             <div>
                                                 <label htmlFor="featureValue">Valor</label>
                                                 <input id="featureValue" className="form-control form-control-sm" type="text" placeholder="Ingrese el nuevo valor para la lista"></input>
                                             </div>
                                             <div>
-                                                <button className="btn btn-success w-25 mt-2 float-end" onClick={this.addFeatureValueToList}>Agregar</button>
+                                                <button className="btn btn-success w-25 mt-2 float-end" onClick={this.addFeatureValueToList}>AGREGAR</button>
                                             </div>
                                         </div>
                                     </div>

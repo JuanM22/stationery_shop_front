@@ -1,0 +1,9 @@
+#formContainer {
+    padding-top   : 6%;
+    padding-bottom: 2%;
+}
+
+#featuresTable {
+    height    : 13em;
+    overflow-y: auto;
+}

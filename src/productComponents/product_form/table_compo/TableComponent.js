@@ -10,7 +10,7 @@ class TableComponent extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.state.tableBody.length !== this.props.featureList.length) this.createTableBody();
+        if ((this.state.tableBody.length !== this.props.featureList.length) || (prevProps.activeSpecificationForm !== this.props.activeSpecificationForm)) this.createTableBody();
     }
 
     createTableBody() {
@@ -23,10 +23,10 @@ class TableComponent extends React.Component {
                 <tr key={index}>
                     <td>{feature.name}</td>
                     <td>{translations[feature.type]}</td>
-                    {(values != null) ? <td> <select className="form-control form-control-sm"> {values}  </select> </td>
+                    {(values != null) ? <td> <select className="form-control form-control-sm" disabled={this.props.activeSpecificationForm}> {values}</select> </td>
                         : <td>N/A</td>
                     }
-                    <td><button className="btn btn-danger" onClick={(e) => this.props.removeFeature(featureList.indexOf(feature), e)}>Quitar</button></td>
+                    <td><button className="btn btn-danger" onClick={(e) => this.props.removeFeature(featureList.indexOf(feature), e)} disabled={this.props.activeSpecificationForm}>Quitar</button></td>
                 </tr>
             )
         })
@@ -57,7 +57,7 @@ class TableComponent extends React.Component {
 
     render() {
         return (
-            <tbody>
+            <tbody className="text-dark">
                 {this.state.tableBody}
             </tbody>
         )

@@ -17,6 +17,11 @@
     opacity: 50%;
 }
 
+.active {
+  background-color: rgb(202, 67, 0);
+  color: black;
+}
+
 .panelHidden {
     transition: 1s;
     margin-left: 93.5%;
@@ -40,3 +45,4 @@
         margin-left: 93.5%;
     }
 }
+

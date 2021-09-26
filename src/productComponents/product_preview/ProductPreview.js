@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProductPreview.css';
-import FileServices from '../services/FileServices';
-import ImageViewer from '../image_viewer/ImageViewer';
+import FileServices from '../../services/FileServices';
+import ImageViewer from '../../image_viewer/ImageViewer';
 
 class ProductPreview extends React.Component {
 
@@ -52,7 +52,7 @@ class ProductPreview extends React.Component {
             features[item.id] = item.value;
         }
     }
-    
+
     extractCustomComboBoxValues(features) {
         const inputs = document.getElementById('customFieldsContainer').getElementsByTagName('select');
         for (let i = 0; i < inputs.length; i++) {
@@ -92,37 +92,39 @@ class ProductPreview extends React.Component {
 
         return (
             <div id="addToCartForm">
-                <div className="container border rounded px-0" id="productPreview">
-                    <div className="bg-success bg-gradient text-white">
+                <div className="container border rounded px-0 form-bg" id="productPreview">
+                    <div className="top-bar-bg bg-gradient text-white">
                         <h3 className="py-2 mx-3">{this.item.name}</h3>
                     </div>
                     <div className="form-group row mt-2 py-2 rounded mx-0">
                         {this.renderImageViewer()}
                     </div>
                     <div className="container">
-                        <h3 className="bg-success bg-gradient text-white py-2 mb-0">Descripción</h3>
-                        {/* <div className="top-0 bg-light"> */}
-                        <p className="py-5 lead border-dark bg-light">{this.item.description}</p>
-                        {/* </div> */}
-                    </div>
-                    <div className="container form-group row my-2">
-                        <div className="col-4">
-                            <div className="card">
-                                <div className="card-header bg-primary bg-gradient text-white fw-bold">Cantidad</div>
-                            </div>
-                            <div className="card-body bg-light">
-                                <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
-                            </div>
+                        <div className="top-bar-bg bg-gradient text-white">
+                            <h3 className="py-2 mx-3 mb-0">Descripción</h3>
                         </div>
-                        <div className="col">
-                            <div className="card">
-                                <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
-                                <div className="card-body" id="customFieldsContainer">
-                                    {customFields}
+                        <p className="py-5 lead border-dark bg-light px-1">{this.item.description}</p>
+                    </div>
+                    <section className="container my-2">
+                        <article className="row">
+                            <div className="col-4">
+                                <div className="card">
+                                    <div className="card-header top-bar-bg bg-gradient text-white fw-bold">Cantidad</div>
+                                </div>
+                                <div className="card-body bg-light">
+                                    <input min="0" max="100" className="form-control form-control-sm" type="number" id="quantity" />
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                            <div className="col">
+                                <div className="card">
+                                    <div className="card-header top-bar-bg bg-gradient text-white fw-bold">Especificaciones adicionales</div>
+                                    <div className="card-body" id="customFieldsContainer">
+                                        {customFields}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
                     <div id="closePreviewBtn">
                         <button className="btn btn-success w-25" onClick={this.sendOrderDetailData}>AGREGAR</button>
                         <button className="btn btn-danger text-white w-25 mx-3" onClick={this.props.closePreview}>CANCELAR</button>

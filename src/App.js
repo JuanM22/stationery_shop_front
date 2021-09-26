@@ -6,12 +6,12 @@ import {
 
 import NavMenu from './nav_menu/NavMenu';
 import UserProfileViewer from './userComponents/user_profile_viewer/UserProfileViewer';
-import ProductForm from './product_form/ProductForm';
+import ProductForm from './productComponents/product_form/ProductForm';
 import Home from './home_compo/Home';
 import Login from './userComponents/user_login_compo/Login';
-import ProductCatalog from './product_catalog/ProductCatalog';
-import OrderPreview from './order_preview/OrderPreview';
-import OrderList from './order_list_component/OrderList';
+import ProductCatalog from './productComponents/product_catalog/ProductCatalog';
+import OrderPreview from './orderComponents/order_preview/OrderPreview';
+import OrderList from './orderComponents/order_list_component/OrderList';
 import PageNotFound from './page_not_found_compo/PageNotFound';
 
 import LoginService from './services/LoginServices';

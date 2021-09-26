@@ -1,4 +1,4 @@
-import User from '../userComponents/User';
+import User from '../../userComponents/User';
 
 class Order {
 

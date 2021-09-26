@@ -3,14 +3,14 @@ import { withRouter } from 'react-router-dom';
 /* Services */
 import './OrderPreview.css';
 import dollar_sign from './dollar_sign.png';
-import FileServices from '../services/FileServices';
-import OrderServices from '../services/OrderServices';
-import LoginService from '../services/LoginServices';
-import UserService from '../services/UserServices';
+import FileServices from '../../services/FileServices';
+import OrderServices from '../../services/OrderServices';
+import LoginService from '../../services/LoginServices';
+import UserService from '../../services/UserServices';
 /* -------------------------------------------------- */
 
 /* Other components */
-import SuccessMessage from '../custom_messages/success_message_compo/SuccessMessage';
+import SuccessMessage from '../../custom_messages/success_message_compo/SuccessMessage';
 /* -------------------------------------------------- */
 
 /* Model Classes */
@@ -212,8 +212,8 @@ class OrderPreview extends React.Component {
             });
 
             return (
-                <div className="card mb-2" key={detail.item.productId}>
-                    <h4 className="card-header bg-primary text-white">{detail.item.name}</h4>
+                <div className="card mb-2 border border-2" key={detail.item.productId}>
+                    <h4 className="card-header top-bar-bg text-white">{detail.item.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
                             <img className="mx-3 img-thumbnail border border-dark rounded" src={(this.state.productPics[index] !== undefined) ? this.state.productPics[index].src : null} alt="Product pic" />
@@ -239,19 +239,16 @@ class OrderPreview extends React.Component {
                                 </div>
                                 <div className="col">
                                     <div className="card">
-                                        <div className="card-header bg-primary bg-gradient text-white fw-bold">Especificaciones adicionales</div>
+                                        <div className="card-header top-bar-bg bg-gradient text-white fw-bold">Especificaciones adicionales</div>
                                         {(detail.item.featureList.length > 0) ?
                                             <div className="card-body" id="customFieldsContainer">
                                                 {customFields}
                                             </div>
-                                            : <div className="bg-warning py-2 text-center fw-bold">Este producto no cuenta con especificaciones adicionales</div>
+                                            : <div className="bg-light py-2 text-center fw-bold border border-2">Este producto no cuenta con especificaciones adicionales</div>
                                         }
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="form-group row mx-2 mt-2">
-
-                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -260,8 +257,8 @@ class OrderPreview extends React.Component {
 
         let orderServicesData = this.state.serviceList.map((detail, index) => {
             return (
-                <div className="card" key={detail.item.productId}>
-                    <h4 className="card-header bg-primary text-white">{detail.item.name}</h4>
+                <div className="card border border-2" key={detail.item.productId}>
+                    <h4 className="card-header top-bar-bg text-white">{detail.item.name}</h4>
                     <div className="form-group row mt-3">
                         <div className="col-2 pb-3">
                             <img className="mx-3 img-thumbnail border border-dark rounded float-start" src={(this.state.servicePics[index] !== undefined) ? this.state.servicePics[index].src : null} alt="Product pic" />
@@ -298,24 +295,24 @@ class OrderPreview extends React.Component {
                     <SuccessMessage message={this.state.message} />
                 </div>
                 <form onSubmit={this.saveOrder}>
-                    <div className="card bg-dark bg-gradient">
-                        <div className="card-header bg-success bg-gradient text-white">
+                    <div className="card form-bg">
+                        <div className="card-header top-bar-bg bg-gradient text-white">
                             <h1>Tu pedido</h1>
                         </div>
                         <div className="container-fluid my-2 py-4">
                             <div className="d-flex align-items-start">
-                                <div className="nav flex-column nav-pills rounded" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                    <button className="nav-link text-white border border-primary active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-basic-info" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información Básica</button>
-                                    <button className="nav-link text-white border border-primary" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Productos</button>
-                                    <button className="nav-link text-white border border-primary" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-services" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Servicios</button>
+                                <div className="nav flex-column nav-pills rounded top-bar-bg" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    <button className="nav-link text-white border border-light active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-basic-info" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Información Básica</button>
+                                    <button className="nav-link text-white border border-light" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Productos</button>
+                                    <button className="nav-link text-white border border-light" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-services" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Servicios</button>
                                 </div>
                                 <div className="tab-content container-fluid" id="v-pills-tabContent">
                                     <div className="tab-pane fade show active" id="v-pills-basic-info" role="tabpanel" aria-labelledby="v-pills-basic-info-tab">
                                         <div className="card">
-                                            <div className="card-header bg-dark text-white">
+                                            <div className="card-header top-bar-bg bg-gradient text-white">
                                                 <h3>Información del cliente</h3>
                                             </div>
-                                            <div className="card-body">
+                                            <div className="card-body bg-light">
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <label>Nombre</label>
@@ -343,10 +340,10 @@ class OrderPreview extends React.Component {
                                             </div>
                                         </div>
                                         <div className="card my-2 mt-4">
-                                            <div className="card-header bg-dark text-white">
+                                            <div className="card-header top-bar-bg bg-gradient text-white">
                                                 <h3>Información Básica del Pedido</h3>
                                             </div>
-                                            <div className="card-body">
+                                            <div className="card-body bg-light">
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <label>Fecha de Expedición</label>
@@ -367,22 +364,22 @@ class OrderPreview extends React.Component {
 
                                     <div className="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab">
                                         <div className="card">
-                                            <div className="card-header bg-dark text-white">
+                                            <div className="card-header top-bar-bg text-white">
                                                 <h3>Productos seleccionados</h3>
                                             </div>
                                             <div className="card-body">
-                                                {orderProductsData}
+                                                {(orderProductsData.length > 0) ? orderProductsData : <div className="alert alert-danger">No se han seleccionado productos para este pedido</div>}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="tab-pane fade" id="v-pills-services" role="tabpanel" aria-labelledby="v-pills-services-tab">
                                         <div className="card">
-                                            <div className="card-header bg-dark text-white">
+                                            <div className="card-header top-bar-bg text-white">
                                                 <h3>Servicios seleccionados</h3>
                                             </div>
                                             <div className="card-body">
-                                                {orderServicesData}
+                                                {(orderServicesData.length > 0) ? orderServicesData : <div className="alert alert-danger">No se han seleccionado servicios para este pedido</div>}
                                             </div>
                                         </div>
                                     </div>
@@ -390,7 +387,7 @@ class OrderPreview extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel">
+                    <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel" hidden={this.props.match.params.operation === 'view'}>
                         {orderPricePanel}
                     </div>
                 </form>

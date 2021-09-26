@@ -8,3 +8,15 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.top-bar-bg {
+  background-color: rgb(202, 67, 0);
+}
+
+.form-bg {
+  background-color: rgb(255, 149, 95);
+}
+
+.form-text-bg {
+  color: rgb(243, 243, 243);
+}
