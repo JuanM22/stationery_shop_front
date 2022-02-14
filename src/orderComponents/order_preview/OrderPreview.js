@@ -28,11 +28,8 @@ class OrderPreview extends React.Component {
             serviceList: data[1],
             dollarSignClass: "dollarMouseOut",
             paymentPanelClass: "panelHidden",
-            orderTotalPrice: 0,
             productPics: [],
             servicePics: [],
-            deliveryDate: "",
-            dispatchDate: "",
             hide: true,
             message: ''
         }
@@ -80,7 +77,9 @@ class OrderPreview extends React.Component {
         for (orderDetail of this.state.serviceList) {
             totalPrice += orderDetail.item.unitPrice * orderDetail.quantity;
         }
-        this.setState({ orderTotalPrice: totalPrice });
+        const order = this.state.order;
+        order.totalPrice = totalPrice;
+        this.setState({ order: order });
     }
 
     changeDetailQuantity(detail, e) {
@@ -90,6 +89,7 @@ class OrderPreview extends React.Component {
         const index = productList.indexOf(detail);
         productList[index] = detail;
         this.setState({ productList: productList });
+        this.calculateTotalPrice();
     }
 
     changeDollarClass = () => {
@@ -156,7 +156,7 @@ class OrderPreview extends React.Component {
         return (
             <div className="col" key={feature.name}>
                 <label htmlFor={feature.name}>{feature.name}</label>
-                <select className="form-control form-control-sm" id={feature.name} value={data.value} onChange={(e) => this.setNewInputValue(data.detail, e, feature)}>
+                <select className="form-control form-control-sm" id={feature.name} value={data.currentValue} onChange={(e) => this.setNewInputValue(data.detail, e, feature)}>
                     {feature.values.map((item, index) => {
                         return (<option value={item} key={index}>{item}</option>)
                     })}
@@ -170,7 +170,10 @@ class OrderPreview extends React.Component {
         var dispatchDate = today.toLocaleDateString('en-CA');
         today.setDate(today.getDate() + 3);
         var deliveryDate = today.toLocaleDateString('en-CA');
-        this.setState({ dispatchDate: dispatchDate, deliveryDate: deliveryDate });
+        const order = this.state.order;
+        order.dispatchDate = dispatchDate;
+        order.deliveryDate = deliveryDate;
+        this.setState({ order: order });
     }
 
     setUserInfo = () => {
@@ -187,20 +190,6 @@ class OrderPreview extends React.Component {
 
     render() {
 
-        const orderPricePanel =
-            <div className="form-group row">
-                <div className="col-2 px-0">
-                    <img className={this.state.dollarSignClass} src={dollar_sign} alt="dollar_sign_pic" id="dollarSignPic" title="Pagar ahora" onMouseEnter={this.changeDollarClass} onMouseLeave={this.changeDollarClass} onClick={this.changePaymentPanelClass} />
-                </div>
-                <div className="card px-0 col mx-1">
-                    <div className="card-header bg-success text-white fw-bold">Valor total</div>
-                    <div className="card-body">
-                        $<label id="totalPrice">{this.state.orderTotalPrice}</label>
-                        <button className="btn btn-success mx-3" data-bs-toggle="modal" data-bs-target="#myModal" type="submit">Pagar ahora</button>
-                    </div>
-                </div>
-            </div>
-
         let orderProductsData = this.state.productList.map((detail, index) => {
             const customFields = detail.item.featureList.map((feature, index) => {
                 const data = {
@@ -210,6 +199,8 @@ class OrderPreview extends React.Component {
                 }
                 return (feature.type === 'select') ? this.createComboBoxField(data) : this.createInputField(data);
             });
+
+            let totalValue = detail.quantity * detail.item.unitPrice;
 
             return (
                 <div className="card mb-2 border border-2" key={detail.item.productId}>
@@ -233,7 +224,7 @@ class OrderPreview extends React.Component {
                                     </div>
                                     <div className="mb-2">
                                         <label htmlFor={`${"price" + detail.item.productId}`}>Valor Total</label>
-                                        <input id={`${"price" + detail.item.productId}`} value={detail.quantity * detail.item.unitPrice}
+                                        <input id={`${"price" + detail.item.productId}`} value={totalValue}
                                             className="form-control form-control-sm" readOnly />
                                     </div>
                                 </div>
@@ -256,6 +247,9 @@ class OrderPreview extends React.Component {
         });
 
         let orderServicesData = this.state.serviceList.map((detail, index) => {
+
+            let totalValue = detail.quantity * detail.item.unitPrice;
+
             return (
                 <div className="card border border-2" key={detail.item.productId}>
                     <h4 className="card-header top-bar-bg text-white">{detail.item.name}</h4>
@@ -279,7 +273,7 @@ class OrderPreview extends React.Component {
                             <div className="form-group row mx-2 mt-2">
                                 <div className="col-6">
                                     <label htmlFor={`${"price" + detail.item.productId}`}>Valor</label>
-                                    <input id={`${"price" + detail.item.productId}`} value={detail.quantity * detail.item.unitPrice}
+                                    <input id={`${"price" + detail.item.productId}`} value={totalValue}
                                         className="form-control form-control-sm" readOnly />
                                 </div>
                             </div>
@@ -333,8 +327,8 @@ class OrderPreview extends React.Component {
                                                         <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.address}></input>
                                                     </div>
                                                     <div className="col-4">
-                                                        <label>Ciudad</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.city?.name}></input>
+                                                        <label htmlFor="city">Ciudad</label>
+                                                        <input id="city" type="text" readOnly className="form-control form-control-sm" value={this.state.order.user.city?.name}></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -347,15 +341,15 @@ class OrderPreview extends React.Component {
                                                 <div className="row">
                                                     <div className="col-4">
                                                         <label>Fecha de Expedición</label>
-                                                        <input type="date" readOnly className="form-control form-control-sm" id="dispatchDate" value={this.state.dispatchDate}></input>
+                                                        <input type="date" readOnly className="form-control form-control-sm" id="dispatchDate" value={this.state.order.dispatchDate.toString()}></input>
                                                     </div>
                                                     <div className="col-4">
                                                         <label>Fecha Aproximada de Entrega</label>
-                                                        <input type="date" readOnly className="form-control form-control-sm" id="deliveryDate" value={this.state.deliveryDate}></input>
+                                                        <input type="date" readOnly className="form-control form-control-sm" id="deliveryDate" value={this.state.order.deliveryDate.toString()}></input>
                                                     </div>
                                                     <div className="col-4">
                                                         <label>Valor a Pagar</label>
-                                                        <input type="text" readOnly className="form-control form-control-sm" value={`$${this.state.orderTotalPrice}`}></input>
+                                                        <input type="text" readOnly className="form-control form-control-sm" value={`$${this.state.order.totalPrice}`}></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -388,7 +382,18 @@ class OrderPreview extends React.Component {
                         </div>
                     </div>
                     <div className={`container col-4 ${this.state.paymentPanelClass}`} id="orderPricePanel" hidden={this.props.match.params.operation === 'view'}>
-                        {orderPricePanel}
+                        <div className="form-group row">
+                            <div className="col-2 px-0">
+                                <img className={this.state.dollarSignClass} src={dollar_sign} alt="dollar_sign_pic" id="dollarSignPic" title="Pagar ahora" onMouseEnter={this.changeDollarClass} onMouseLeave={this.changeDollarClass} onClick={this.changePaymentPanelClass} />
+                            </div>
+                            <div className="card px-0 col mx-1">
+                                <div className="card-header bg-success text-white fw-bold">Valor total</div>
+                                <div className="card-body">
+                                    <span id="totalPrice">{`$${this.state.order.totalPrice}`}</span>
+                                    <button className="btn btn-success mx-3" data-bs-toggle="modal" data-bs-target="#myModal" type="submit">Pagar ahora</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div >

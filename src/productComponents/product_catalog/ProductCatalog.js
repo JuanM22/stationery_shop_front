@@ -3,7 +3,7 @@ import './ProductCatalog.css';
 import ProductServices from '../../services/ProductServices';
 import FileServices from '../../services/FileServices';
 import FilterComponent from '../../filter_compo/FilterComponent';
-import ProductPreview from '../product_form/ProductForm';
+import ProductPreview from '../product_preview/ProductPreview';
 import ProductCard from './product_card/ProductCard';
 
 class ProductCatalog extends React.Component {
@@ -107,11 +107,14 @@ class ProductCatalog extends React.Component {
                 <ProductCard userType={this.props.userType} data={data} key={item.productId} showProductPreview={this.showProductPreview} />
             );
         });
+
+        const emptyListMessage = (this.props.productType === "products") ? "No hay productos registrados en el sistema" : "No hay servicios registrados en el sistema";
+
         return (
             <div className="container-fluid position-absolute" id="catalogContainer">
                 <div className="row">
                     <div className="col-10 row mx-2 form-bg p-4 rounded">
-                        {this.state.products.length > 0 ? products : <div className="alert alert-danger">No hay productos registrados en el sistema</div>}
+                        {this.state.products.length > 0 ? products : <div className="alert alert-danger">{emptyListMessage}</div>}
                     </div>
                     <div className="col">
                         <FilterComponent />

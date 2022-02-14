@@ -1,11 +1,13 @@
 .profile-header-container {
-    margin-left: 85%;
-    position: fixed;
+    position  : fixed;
+    right     : 10em;
+    text-align: center;
 }
 
 .profile-header-img>img.img-circle {
-    width: 28%;
-    border-radius: 50%;
-    border: 2px solid orange;
+    width           : 3.5em;
+    height          : 3.5em;
+    border-radius   : 6em;
+    border          : 2px solid orange;
     background-color: cadetblue;
 }
